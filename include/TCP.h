@@ -16,9 +16,10 @@ public:
 	}
 
 private:
-	inline static const std::string ConfigDir = "config.ini";
+	inline static const std::string ConfigDir = "../config.ini";
 
-	std::function<void(int)> onAccept;
+	std::function<void(int, char*)> onAccept;
+	class ThreadPool* threadPool;
 	int serverSocket;
 	char* buf;
 	int size;

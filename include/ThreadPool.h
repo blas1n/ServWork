@@ -3,13 +3,14 @@
 #include <mutex>
 #include <queue>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 class ThreadPool
 {
 public:
 	ThreadPool();
-    ~ThreadPool();
+    	~ThreadPool();
 
 	template <class Fn, class... Args>
 	std::future<std::invoke_result_t<Fn, Args...>> AddTask(
@@ -31,7 +32,7 @@ std::future<std::invoke_result_t<Fn, Args...>> ThreadPool::AddTask(Fn&& fn, Args
 {
 		auto task = std::make_shared<
 			std::packaged_task<std::invoke_result_t<Fn, Args...>()>>(
-			  std::bind(Forward<Fn>(fn), Forward<Args>(args)...)
+			  std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...)
       );
 
 		taskMutex.lock();

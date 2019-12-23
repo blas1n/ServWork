@@ -12,6 +12,7 @@
 #include <iostream>
 #include "Exception.h"
 #include "INI.h"
+#include "ThreadPool.h"
 
 TCP::TCP()
 	: onAccept(), serverSocket(0)
@@ -34,6 +35,7 @@ TCP::TCP()
 
 	if (listen(serverSocket, 5)) throw SocketException{ "listen" };
 
+	threadPool = new ThreadPool;
 	buf = new char[size];
 }
 
@@ -55,8 +57,9 @@ void TCP::Run()
 		const auto readLen = read(clientSocket, buf, size);
 
 		if (readLen > 0)
-		{
-			onAccept(buf);
+		{	
+			
+			onAccept(clientSocket, buf);
 		}
 		else
 		{

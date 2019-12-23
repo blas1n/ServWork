@@ -30,3 +30,18 @@ public:
 private:
 	std::string path;
 };
+
+class ThreadException
+{
+public:
+	explicit ThreadException(const std::string& inMsg) noexcept
+		: msg(inMsg) {}
+
+	const std::string& Message() const noexcept
+	{
+		return msg;
+	}
+
+private:
+	std::string msg;
+};

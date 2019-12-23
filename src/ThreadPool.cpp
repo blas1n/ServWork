@@ -1,16 +1,13 @@
 #include "ThreadPool.h"
+#include "Exception.h"
 
-ThreadPool::ThreadPool() noexcept
+ThreadPool::ThreadPool()
 		: threads(), tasks(), cv(), taskMutex(), isEnd(false)
 {
-    auto threadNum = std::thread::hardware_concurrency();
+		auto threadNum = std::thread::hardware_concurrency();
 		if (threadNum == 0)
 		{
-			throw SystemException
-			{
-				TEXT("Hardware Concurrency is 0"),
-				Exception::MessageType::Shallow
-			};
+			throw ThreadException{ "Hardware Concurrency is 0" };
 		}
 
 		threads.reserve(threadNum);
