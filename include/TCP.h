@@ -19,7 +19,7 @@ private:
 	inline static const std::string ConfigDir = "config.ini";
 
 	std::function<void(int)> onAccept;
-	int socket;
+	int serverSocket;
 	char* buf;
 	int size;
 	int port;

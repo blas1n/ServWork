@@ -35,5 +35,5 @@ private:
 	void Init();
 
     std::map<std::string, std::string> map;
-    std::string path
-}
+    std::string path;
+};

@@ -1,33 +1,32 @@
 #include <cstring>
-#include <exception>
 #include <string>
 
-class SocketException : std::exception
+class SocketException
 {
 public:
 	explicit SocketException(const std::string& inKind) noexcept
 		: kind(inKind) {}
 
-	const std::string& what() const noexcept override
+	std::string Message() const noexcept
 	{
-		return kind + " error : " + stderror(errno);
+		return kind + " error : " + strerror(errno);
 	}
 
 private:
 	std::string kind;
-}
+};
 
-class FileException : std::exception
+class FileException
 {
 public:
 	explicit FileException(const std::string& inPath) noexcept
 		: path(inPath) {}
 
-	const std::string& what() const noexcept override
+	std::string Get() const noexcept
 	{
 		return path + " not found";
 	}
 
 private:
 	std::string path;
-}
+};

@@ -26,8 +26,8 @@ void INI::Init()
 		in.getline(tmp, 128);
 		buf = tmp;
 
-		auto idx = std::find(buf.cbegin(), buf.cend(), '=') - buf.cbegin();
-		map.insert(make_pair(buf.substr(0, idx), buf.substr(idx + 1)));
+		auto idx = buf.find('=');
+		map.insert(std::make_pair(buf.substr(0, idx), buf.substr(idx + 1)));
 	}
 
 	in.close();
