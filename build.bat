@@ -10,6 +10,6 @@ if "%1" == "" (
 )
 
 mkdir build && cd build
-cmake .. -D CMAKE_BUILD_TYPE=%BUILD_TYPE%
+cmake .. -DCMAKE_BUILD_TYPE=%BUILD_TYPE%
 cmake --build .
 cd ..
