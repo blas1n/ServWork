@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "ThreadPool.h"
 
 Linux_TCP::Linux_TCP()
 	: Base_TCP(), onAccept(), serverSocket(0)
