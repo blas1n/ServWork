@@ -11,7 +11,7 @@ if "%1" == "" (
 
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || goto :error
-make run || goto :error
+make || mingw32-make || goto :error
 cd ..
 
 :error
