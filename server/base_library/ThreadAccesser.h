@@ -6,14 +6,13 @@
 class ThreadAccesser
 {
 public:
-	ThreadAccesser() = delete;
-	~ThreadAccesser() = delete;
+	virtual ~ThreadAccesser() = default;
 
 protected:
 	template <class Fn, class... Args>
 	static inline decltype(auto) AddTask(Fn&& fn, Args&&... args) noexcept
 	{
-		return threadPool->AddTask(std::forward(fn), std::forward(args)...);
+		return threadPool->AddTask(std::forward<Fn>(fn), std::forward<Args>(args)...);
 	}
 
 private:
