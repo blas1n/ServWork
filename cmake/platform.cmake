@@ -1,5 +1,4 @@
 # Create defines based on platform
-message (${CMAKE_CXX_COMPILER_ID})
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	set (ARCH Windows)
 	set (PLATFORM_WINDOWS 1)
