@@ -5,8 +5,8 @@
 #include <WS2tcpip.h>
 #include "ThreadPool.h"
 
-Windows_TCP::Windows_TCP()
-	: Base_TCP(), onAccept(), serverSocket(0)
+Windows_TCP::Windows_TCP(ThreadPool& inThreadPool)
+	: Base_TCP(inThreadPool), onAccept(), serverSocket(0)
 {
 	try
 	{
@@ -54,7 +54,7 @@ Windows_TCP::Windows_TCP()
 			};
 		}
 	}
-	catch (std::runtime_error e)
+	catch (std::runtime_error& e)
 	{
 		WSACleanup();
 		throw e;

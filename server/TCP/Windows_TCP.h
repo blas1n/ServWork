@@ -8,7 +8,7 @@
 class Windows_TCP : public Base_TCP
 {
 public:
-	Windows_TCP();
+	Windows_TCP(ThreadPool& inThreadPool);
 	~Windows_TCP();
 
 	void Run();

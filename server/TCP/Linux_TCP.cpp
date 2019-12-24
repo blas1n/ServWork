@@ -14,8 +14,8 @@
 #include <unistd.h>
 #include "ThreadPool.h"
 
-Linux_TCP::Linux_TCP()
-	: Base_TCP(), onAccept(), serverSocket(0)
+Linux_TCP::Linux_TCP(ThreadPool& inThreadPool)
+	: Base_TCP(inThreadPool), onAccept(), serverSocket(0)
 {
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serverSocket == -1)

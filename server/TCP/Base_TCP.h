@@ -15,7 +15,7 @@ public:
 	}
 
 protected:
-	class ThreadPool& threadPool;
+	ThreadPool& threadPool;
 	char* buf;
 	int queueSize;
 	int bufSize;

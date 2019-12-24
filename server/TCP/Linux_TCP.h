@@ -7,7 +7,7 @@
 class Linux_TCP : public Base_TCP
 {
 public:
-	Linux_TCP();
+	Linux_TCP(class ThreadPool& inThreadPool);
 	~Linux_TCP();
 
 	void Run();
