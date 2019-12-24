@@ -1,0 +1,17 @@
+language: cpp
+
+matrix:
+  include:
+  - os: linux
+    dist: bionic
+    compiler: gcc
+    sudo: required
+    script:
+      - sh build.sh
+
+  - os: windows
+    script:
+      - ./build.bat
+
+notifications:
+  email: false
