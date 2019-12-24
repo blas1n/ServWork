@@ -4,13 +4,13 @@ if exist build (
   rd /s /q build
 )
 
-set build=Release
+set BUILD_TYPE=Release
 if "%1" == "" (
-	set build=%1
+	set BUILD_TYPE=%1
 )
 
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=%build% .. || goto :error
+cmake -DCMAKE_BUILD_TYPE=%BUILD_TYPE% .. || goto :error
 make run || goto :error
 cd ..
 

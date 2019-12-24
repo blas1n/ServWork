@@ -6,12 +6,12 @@ if [ -d build ]; then
 	rm -rf build
 fi
 
-build = Release
+BUILD_TYPE = Release
 if [ "$1" = "" ]; then
-	build = $1
+	BUILD_TYPE = $1
 fi
 
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=$build .. || goto :error
+cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. || goto :error
 make
 cd ..
