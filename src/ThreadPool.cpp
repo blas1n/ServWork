@@ -1,5 +1,6 @@
 #include "ThreadPool.h"
 #include "Exception.h"
+#include <utility>
 
 ThreadPool::ThreadPool()
 		: threads(), tasks(), cv(), taskMutex(), isEnd(false)
@@ -33,7 +34,7 @@ void ThreadPool::ThreadWork() noexcept
 			  cv.wait(lock, [this]() { return !tasks.empty() || isEnd; });
 			  if (isEnd && tasks.empty()) return;
 
-			  auto&& task = Move(tasks.front());
+			  auto&& task = std::move(tasks.front());
 			  tasks.pop();
 			  lock.unlock();
 			  task();

@@ -42,13 +42,14 @@ TCP::TCP()
 TCP::~TCP()
 {
 	close(serverSocket);
+	delete threadPool;
 	delete[] buf;
 }
 
 void TCP::Run()
 {
 	struct sockaddr_in clientAddr;
-	auto clientLen = sizeof(clientAddr);
+	socklen_t clientLen = sizeof(clientAddr);
 
 	while (true)
 	{
@@ -58,8 +59,7 @@ void TCP::Run()
 
 		if (readLen > 0)
 		{	
-			
-			onAccept(clientSocket, buf);
+			threadPool->AddTask(onAccept, clientSocket, buf);
 		}
 		else
 		{
