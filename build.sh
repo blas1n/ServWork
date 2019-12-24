@@ -6,9 +6,9 @@ if [ -d build ]; then
 	rm -rf build
 fi
 
-set BUILD_TYPE=Release
+BUILD_TYPE = Release
 if [ "$1" = "" ]; then
-	set BUILD_TYPE=$1
+	BUILD_TYPE = $1
 fi
 
 mkdir build && cd build
