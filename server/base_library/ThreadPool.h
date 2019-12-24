@@ -12,7 +12,7 @@ class ThreadPool
 {
 public:
 	ThreadPool();
-    	~ThreadPool();
+    ~ThreadPool();
 
 	template <class Fn, class... Args>
 	std::future<std::invoke_result_t<Fn, Args...>> AddTask(
@@ -32,15 +32,15 @@ private:
 template <class Fn, class... Args>
 std::future<std::invoke_result_t<Fn, Args...>> ThreadPool::AddTask(Fn&& fn, Args&&... args) noexcept
 {
-		auto task = std::make_shared<
-			std::packaged_task<std::invoke_result_t<Fn, Args...>()>>(
-			  std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...)
-      );
+	auto task = std::make_shared<
+		std::packaged_task<std::invoke_result_t<Fn, Args...>()>>(
+			std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...)
+	);
 
-		taskMutex.lock();
-		tasks.push([task] { (*task)(); });
-		taskMutex.unlock();
+	taskMutex.lock();
+	tasks.push([task] { (*task)(); });
+	taskMutex.unlock();
 
-		cv.notify_one();
-	  return task->get_future();
+	cv.notify_one();
+	return task->get_future();
 }

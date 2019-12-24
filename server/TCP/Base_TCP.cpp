@@ -3,7 +3,6 @@
 #include "ThreadPool.h"
 
 Base_TCP::Base_TCP()
-	: onAccept()
 {
 	INI ini{ ConfigDir };
 	port = std::stoi(ini.Get("Port"));
@@ -15,6 +14,6 @@ Base_TCP::Base_TCP()
 
 Base_TCP::~Base_TCP()
 {
-  delete ThreadPool;
+	delete threadPool;
 	delete[] buf;
 }

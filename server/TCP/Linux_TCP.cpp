@@ -14,7 +14,7 @@
 #include "Exception.h"
 
 Linux_TCP::Linux_TCP()
-	: Base_TCP(), serverSocket(0)
+	: Base_TCP(), onAccept(), serverSocket(0)
 {
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serverSocket == -1) throw SocketException{ "socket" };
@@ -49,11 +49,11 @@ void Linux_TCP::Run()
 
 		if (readLen > 0)
 			threadPool->AddTask(onAccept, clientSocket, buf);
-    
-    close(clientSocket);
 
-    if (readLen == 0)
-      break;
+		close(clientSocket);
+
+		if (readLen == 0)
+			break;
 	}
 }
 
