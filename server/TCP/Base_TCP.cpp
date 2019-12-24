@@ -6,10 +6,11 @@ Base_TCP::Base_TCP()
 {
 	INI ini{ ConfigDir };
 	port = std::stoi(ini.Get("Port"));
-	size = std::stoi(ini.Get("MaxBuf"));
+	bufSize = std::stoi(ini.Get("BufferSize"));
+	queueSize = std::stoi(ini.Get("QueueSize"));
 
 	threadPool = new ThreadPool;
-	buf = new char[size];
+	buf = new char[bufSize];
 }
 
 Base_TCP::~Base_TCP()

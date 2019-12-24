@@ -17,8 +17,13 @@ Linux_TCP::Linux_TCP()
 	: Base_TCP(), onAccept(), serverSocket(0)
 {
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-	if (serverSocket == -1) throw std::runtime_error{ std::string{ "socket error: " } + strerror(errno) };
+	if (serverSocket == -1)
+	{
+		throw std::runtime_error
+		{
+			std::string("socket error ") + strerror(errno)
+		};
+	}
 
 	struct sockaddr_in addr;
 	memset(&addr, 0, sizeof(addr));
@@ -27,9 +32,22 @@ Linux_TCP::Linux_TCP()
 	addr.sin_port = htons(port);
 
 	int check = bind(serverSocket, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr));
-	if (check > 0) throw std::runtime_error{ std::string{ "bind error: " } + strerror(errno) };
+	if (check == -1)
+	{
+		throw std::runtime_error
+		{
+			std::string("bind error ") + strerror(errno)
+		};
+	}
 
-	if (listen(serverSocket, 5)) throw std::runtime_error{ std::string{ "listen error: " } + strerror(errno) };
+	check = listen(serverSocket, queueSize);
+	if (check == -1)
+	{
+		throw std::runtime_error
+		{
+			std::string("listen error ") + strerror(errno)
+		};
+	}
 }
 
 Linux_TCP::~Linux_TCP()
@@ -40,21 +58,26 @@ Linux_TCP::~Linux_TCP()
 void Linux_TCP::Run()
 {
 	struct sockaddr_in clientAddr;
-	auto clientLen = sizeof(clientAddr);
+	socklen_t clientLen = sizeof(clientAddr);
 
 	while (true)
 	{
 		auto clientSocket = accept(serverSocket, reinterpret_cast<struct sockaddr*>(&clientAddr), &clientLen);
+		if (clientSocket == -1)
+		{
+			throw std::runtime_error
+			{
+				std::string("invalid socket ") + strerror(errno)
+			};
+		}
+
 		std::cout << "New Client Connect: " << inet_ntoa(clientAddr.sin_addr) << std::endl;
-		const auto readLen = read(clientSocket, buf, size);
+		const auto readLen = read(clientSocket, buf, bufSize);
 
 		if (readLen > 0)
 			threadPool->AddTask(onAccept, clientSocket, buf);
 
 		close(clientSocket);
-
-		if (readLen == 0)
-			break;
 	}
 }
 
