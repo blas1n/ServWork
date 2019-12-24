@@ -1,7 +1,6 @@
 #include "Base_TCP.h"
 #include <utility>
 #include "INI.h"
-#include "ThreadPool.h"
 
 Base_TCP::Base_TCP()
 	: buf(nullptr),

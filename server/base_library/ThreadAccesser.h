@@ -18,4 +18,4 @@ protected:
 private:
 	friend class ThreadPool;
 	inline static ThreadPool* threadPool = nullptr;
-}
+};

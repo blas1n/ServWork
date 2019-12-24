@@ -14,8 +14,8 @@ public:
 	
 	Base_TCP& operator=(const Base_TCP& other);
 	Base_TCP& operator=(Base_TCP&& other) noexcept;
-
-	virtual ~Base_TCP();
+	
+	~Base_TCP() override;
 
 	inline int GetPort() const noexcept
 	{
