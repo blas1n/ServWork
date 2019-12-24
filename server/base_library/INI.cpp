@@ -1,13 +1,13 @@
 #include "INI.h"
+#include <exception>
 #include <fstream>
-#include "Exception.h"
 
 void INI::Set(const std::string& key, const std::string& value)
 {
 	map[key] = value;
 
 	std::ofstream out{ path };
-	if (!out.is_open()) throw FileException{ "Cannot open config file" };
+	if (!out.is_open()) throw std::runtime_error{ "Cannot open config file" };
 
 	for (const auto& pair : map)
 		out << pair.first << "=" << pair.second << std::endl;
@@ -16,7 +16,7 @@ void INI::Set(const std::string& key, const std::string& value)
 void INI::Init()
 {
 	std::ifstream in{ path };
-	if (!in.is_open()) throw FileException{ "Cannot open config file" };
+	if (!in.is_open()) throw std::runtime_error{ "Cannot open config file" };
 
 	char tmp[128];
 	std::string buf;

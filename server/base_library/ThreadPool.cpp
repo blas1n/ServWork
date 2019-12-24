@@ -1,5 +1,5 @@
 #include "ThreadPool.h"
-#include "Exception.h"
+#include <exception>
 #include <utility>
 
 ThreadPool::ThreadPool()
@@ -7,7 +7,7 @@ ThreadPool::ThreadPool()
 {
 	auto threadNum = std::thread::hardware_concurrency();
 	if (threadNum == 0)
-		throw ThreadException{ "Hardware Concurrency is 0" };
+		throw std::runtime_error{ "Hardware Concurrency is 0" };
 
 	threads.reserve(threadNum);
 

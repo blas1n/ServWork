@@ -2,22 +2,23 @@
 
 #include "Linux_TCP.h"
 #include <arpa/inet.h>
+#include <cstring>
 #include <fcntl.h>
 #include <errno.h>
+#include <exception>
 #include <iostream>
-#include <string.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "Exception.h"
 
 Linux_TCP::Linux_TCP()
 	: Base_TCP(), onAccept(), serverSocket(0)
 {
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (serverSocket == -1) throw SocketException{ "socket" };
+
+	if (serverSocket == -1) throw std::runtime_error{ std::string{ "socket error: " } + strerror(errno) };
 
 	struct sockaddr_in addr;
 	memset(&addr, 0, sizeof(addr));
@@ -26,9 +27,9 @@ Linux_TCP::Linux_TCP()
 	addr.sin_port = htons(port);
 
 	int check = bind(serverSocket, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr));
-	if (check > 0) throw SocketException{ "bind" };
+	if (check > 0) throw std::runtime_error{ std::string{ "bind error: " } + strerror(errno) };
 
-	if (listen(serverSocket, 5)) throw SocketException{ "listen" };
+	if (listen(serverSocket, 5)) throw std::runtime_error{ std::string{ "listen error: " } + strerror(errno) };
 }
 
 Linux_TCP::~Linux_TCP()

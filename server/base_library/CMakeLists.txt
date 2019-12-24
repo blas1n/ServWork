@@ -2,7 +2,6 @@ set_project ()
 
 # Files
 set (SRC
-	Exception.h
 	INI.cpp
 	INI.h
 	ThreadPool.cpp
