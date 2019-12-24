@@ -12,6 +12,6 @@ if [ "$1" = "" ]; then
 fi
 
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. || goto :error
-make
+cmake .. -D CMAKE_BUILD_TYPE=%BUILD_TYPE%
+cmake --build .
 cd ..
