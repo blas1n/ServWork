@@ -4,11 +4,11 @@
 
 #include "Base_TCP.h"
 
-class Linux_TCP : public Base_TCP
+class Linux_TCP final : public Base_TCP
 {
 public:
-	Linux_TCP(class ThreadPool& inThreadPool);
-	~Linux_TCP();
+	Linux_TCP();
+	~Linux_TCP() override;
 
 	void Run();
 

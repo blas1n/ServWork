@@ -1,16 +1,21 @@
 set_project ()
 
 # Files
-set (SRC
+set (SRC_INI
 	INI.cpp
 	INI.h
+)
+
+set (SRC_THREAD
+	ThreadAccesser.h
 	ThreadPool.cpp
 	ThreadPool.h
 )
 
 # Target
 add_library (${PROJECT_ID} STATIC
-	${SRC}
+	${SRC_INI}
+	${SRC_THREAD}
 )
 
 # Dependencies
@@ -19,4 +24,5 @@ if (CMAKE_SYSTEM_NAME MATCHES "Linux")
 endif ()
 
 # Filters
-source_group ("" FILES ${SRC})
+source_group ("INI" FILES ${SRC_INI})
+source_group ("Thread" FILES ${SRC_THREAD})

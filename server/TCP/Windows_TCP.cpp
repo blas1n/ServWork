@@ -5,8 +5,8 @@
 #include <WS2tcpip.h>
 #include "ThreadPool.h"
 
-Windows_TCP::Windows_TCP(ThreadPool& inThreadPool)
-	: Base_TCP(inThreadPool), onAccept(), serverSocket(0)
+Windows_TCP::Windows_TCP()
+	: Base_TCP(), onAccept(), serverSocket(0)
 {
 	try
 	{
@@ -87,7 +87,7 @@ void Windows_TCP::Run()
 		const auto readLen = recv(clientSocket, buf, bufSize, 0);
 
 		if (readLen > 0)
-			threadPool->AddTask(onAccept, clientSocket, buf);
+			AddTask(onAccept, clientSocket, buf);
 
 		closesocket(clientSocket);
 	}

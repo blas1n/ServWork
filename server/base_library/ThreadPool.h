@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 
-class ThreadPool
+class ThreadPool final
 {
 public:
 	ThreadPool();

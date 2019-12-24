@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 
-class INI
+class INI final
 {
 public:
     INI(const std::string& inPath)

@@ -5,12 +5,11 @@
 #include "Base_TCP.h"
 #include <WinSock2.h>
 
-class Windows_TCP : public Base_TCP
+class Windows_TCP final : public Base_TCP
 {
 public:
-	Windows_TCP(ThreadPool& inThreadPool);
-	~Windows_TCP();
-
+	Windows_TCP();
+	~Windows_TCP() override;
 	void Run();
 
 	template <class FN>
