@@ -6,7 +6,7 @@
 class Base_TCP
 {
 public:
-	Base_TCP();
+	Base_TCP(class ThreadPool& inThreadPool);
 	virtual ~Base_TCP();
 
 	inline int GetPort() const noexcept
@@ -15,7 +15,7 @@ public:
 	}
 
 protected:
-	class ThreadPool* threadPool;
+	class ThreadPool& threadPool;
 	char* buf;
 	int queueSize;
 	int bufSize;
