@@ -5,7 +5,7 @@ if exist build (
 )
 
 mkdir build && cd build
-cmake .. || goto :error
+cmake -DCMAKE_BUILD_TYPE=Release .. || goto :error
 make || goto :error
 cd ..
 
