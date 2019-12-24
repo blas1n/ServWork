@@ -1,26 +1,21 @@
-#include "TCP.h"
-#include <sys/socket.h>
-#include <sys/stat.h>
+#if PLATFORM_LINUX
+
+#include "Linux_TCP.h"
 #include <arpa/inet.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <iostream>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "Exception.h"
-#include "INI.h"
-#include "ThreadPool.h"
 
-TCP::TCP()
-	: onAccept(), serverSocket(0)
+Linux_TCP::Linux_TCP()
+	: Base_TCP(), serverSocket(0)
 {
-	INI ini{ ConfigDir };
-	port = std::stoi(ini.Get("Port"));
-	size = std::stoi(ini.Get("MaxBuf"));
-
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serverSocket == -1) throw SocketException{ "socket" };
 
@@ -34,22 +29,17 @@ TCP::TCP()
 	if (check > 0) throw SocketException{ "bind" };
 
 	if (listen(serverSocket, 5)) throw SocketException{ "listen" };
-
-	threadPool = new ThreadPool;
-	buf = new char[size];
 }
 
-TCP::~TCP()
+Linux_TCP::~Linux_TCP()
 {
 	close(serverSocket);
-	delete threadPool;
-	delete[] buf;
 }
 
-void TCP::Run()
+void Linux_TCP::Run()
 {
 	struct sockaddr_in clientAddr;
-	socklen_t clientLen = sizeof(clientAddr);
+	auto clientLen = sizeof(clientAddr);
 
 	while (true)
 	{
@@ -58,15 +48,13 @@ void TCP::Run()
 		const auto readLen = read(clientSocket, buf, size);
 
 		if (readLen > 0)
-		{	
 			threadPool->AddTask(onAccept, clientSocket, buf);
-		}
-		else
-		{
-			close(clientSocket);
-			break;
-		}
+    
+    close(clientSocket);
 
-		close(clientSocket);
+    if (readLen == 0)
+      break;
 	}
 }
+
+#endif
