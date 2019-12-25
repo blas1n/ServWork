@@ -14,8 +14,64 @@
 #include <unistd.h>
 #include "ThreadPool.h"
 
-Linux_TCP::Linux_TCP()
-	: onAccept(), serverSocket(0)
+Linux_TCP::Linux_TCP(int inPort, int inBufSize, int inQueueSize)
+	: Base_TCP(inPort, inBufSize, inQueueSize), onAccept(), serverSocket(0)
+{
+	Init();
+}
+
+Linux_TCP::Linux_TCP(const std::string& configPath)
+	: Base_TCP(configPath), onAccept(), serverSocket(0)
+{
+	Init();
+}
+
+Linux_TCP::Linux_TCP(Linux_TCP&& other) noexcept
+	: Base_TCP(std::move(other)),
+	onAccept(std::move(other.onAccpet)),
+	serverSocket(std::move(other.serverSocket))
+{}
+
+Linux_TCP& Linux_TCP::operator=(Linux_TCP&& other) noexcept
+{
+	Base_TCP::operator=(std::move(other));
+	onAccept = std::move(other.onAccept);
+	serverSocket = std::move(other.serverSocket);
+	return *this;
+}
+
+Linux_TCP::~Linux_TCP()
+{
+	close(serverSocket);
+}
+
+void Linux_TCP::Run()
+{
+	struct sockaddr_in clientAddr;
+	socklen_t clientLen = sizeof(clientAddr);
+
+	while (true)
+	{
+		auto clientSocket = accept(serverSocket, reinterpret_cast<struct sockaddr*>(&clientAddr), &clientLen);
+		if (clientSocket == -1)
+		{
+			throw std::runtime_error
+			{
+				std::string("invalid socket ") + strerror(errno)
+			};
+		}
+
+		std::cout << "New Client Connect: " << inet_ntoa(clientAddr.sin_addr) << std::endl;
+		const auto readLen = read(clientSocket, buf, bufSize);
+
+		if (readLen > 0)
+			AddTask(onAccept, clientSocket, buf);
+
+		close(clientSocket);
+	}
+}
+
+void Linux_TCP::Init()
 {
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serverSocket == -1)
@@ -48,37 +104,6 @@ Linux_TCP::Linux_TCP()
 		{
 			std::string("listen error ") + strerror(errno)
 		};
-	}
-}
-
-Linux_TCP::~Linux_TCP()
-{
-	close(serverSocket);
-}
-
-void Linux_TCP::Run()
-{
-	struct sockaddr_in clientAddr;
-	socklen_t clientLen = sizeof(clientAddr);
-
-	while (true)
-	{
-		auto clientSocket = accept(serverSocket, reinterpret_cast<struct sockaddr*>(&clientAddr), &clientLen);
-		if (clientSocket == -1)
-		{
-			throw std::runtime_error
-			{
-				std::string("invalid socket ") + strerror(errno)
-			};
-		}
-
-		std::cout << "New Client Connect: " << inet_ntoa(clientAddr.sin_addr) << std::endl;
-		const auto readLen = read(clientSocket, buf, bufSize);
-
-		if (readLen > 0)
-			AddTask(onAccept, clientSocket, buf);
-
-		close(clientSocket);
 	}
 }
 

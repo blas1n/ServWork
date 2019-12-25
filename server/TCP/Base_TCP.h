@@ -7,12 +7,13 @@
 class Base_TCP : protected ThreadAccesser
 {
 public:
-	Base_TCP();
+	Base_TCP(int inPort, int inBufSize, int inQueueSize);
+	Base_TCP(const std::string& configPath);
 
-	Base_TCP(const Base_TCP& other);
+	Base_TCP(const Base_TCP& other) = delete;
 	Base_TCP(Base_TCP&& other) noexcept;
 	
-	Base_TCP& operator=(const Base_TCP& other);
+	Base_TCP& operator=(const Base_TCP& other) = delete;
 	Base_TCP& operator=(Base_TCP&& other) noexcept;
 	
 	~Base_TCP() override;

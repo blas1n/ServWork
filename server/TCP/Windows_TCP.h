@@ -8,8 +8,14 @@
 class Windows_TCP final : public Base_TCP
 {
 public:
-	Windows_TCP();
+	Windows_TCP(int inPort, int inBufSize, int inQueueSize);
+	Windows_TCP(const std::string& configPath);
+
+	Windows_TCP(Windows_TCP&& other) noexcept;
+	Windows_TCP& operator=(Windows_TCP&& other) noexcept;
+
 	~Windows_TCP() override;
+
 	void Run();
 
 	template <class FN>
@@ -17,6 +23,9 @@ public:
 	{
 		onAccept = fn;
 	}
+
+private:
+	void Init();
 
 private:
 	std::function<void(SOCKET, char*)> onAccept;
