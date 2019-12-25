@@ -28,7 +28,7 @@ Linux_TCP::Linux_TCP(const std::string& configPath)
 
 Linux_TCP::Linux_TCP(Linux_TCP&& other) noexcept
 	: Base_TCP(std::move(other)),
-	onAccept(std::move(other.onAccpet)),
+	onAccept(std::move(other.onAccept)),
 	serverSocket(std::move(other.serverSocket))
 {}
 
