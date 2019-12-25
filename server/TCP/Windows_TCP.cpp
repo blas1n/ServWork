@@ -65,56 +65,48 @@ void Windows_TCP::Run()
 
 void Windows_TCP::Init()
 {
-	try
+	WSADATA wsaData;
+
+	int check = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (check != NO_ERROR)
 	{
-		WSADATA wsaData;
-
-		int check = WSAStartup(MAKEWORD(2, 2), &wsaData);
-		if (check != NO_ERROR)
+		throw std::runtime_error
 		{
-			throw std::runtime_error
-			{
-				std::string("WSAStartup error ") + strerror(errno)
-			};
-		}
-
-		serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-		if (serverSocket == INVALID_SOCKET)
-		{
-			throw std::runtime_error
-			{
-				std::string("socket error ") + strerror(errno)
-			};
-		}
-
-		SOCKADDR_IN addr;
-		memset(&addr, 0, sizeof(addr));
-		addr.sin_family = AF_INET;
-		addr.sin_port = htons(port);
-		addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
-
-		check = bind(serverSocket, reinterpret_cast<SOCKADDR*>(&addr), sizeof(addr));
-		if (check == SOCKET_ERROR)
-		{
-			throw std::runtime_error
-			{
-				std::string("bind error ") + strerror(errno)
-			};
-		}
-
-		check = listen(serverSocket, queueSize);
-		if (check == SOCKET_ERROR)
-		{
-			throw std::runtime_error
-			{
-				std::string("listen error ") + strerror(errno)
-			};
-		}
+			std::string("WSAStartup error ") + strerror(errno)
+		};
 	}
-	catch (std::runtime_error & e)
+
+	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (serverSocket == INVALID_SOCKET)
 	{
-		WSACleanup();
-		throw e;
+		throw std::runtime_error
+		{
+			std::string("socket error ") + strerror(errno)
+		};
+	}
+
+	SOCKADDR_IN addr;
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+
+	check = bind(serverSocket, reinterpret_cast<SOCKADDR*>(&addr), sizeof(addr));
+	if (check == SOCKET_ERROR)
+	{
+		throw std::runtime_error
+		{
+			std::string("bind error ") + strerror(errno)
+		};
+	}
+
+	check = listen(serverSocket, queueSize);
+	if (check == SOCKET_ERROR)
+	{
+		throw std::runtime_error
+		{
+			std::string("listen error ") + strerror(errno)
+		};
 	}
 }
 
