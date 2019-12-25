@@ -4,12 +4,20 @@ if exist build (
   rmdir /s /q build
 )
 
-set BUILD_TYPE = Release
-if "%1" == "" (
-	set BUILD_TYPE = %1
+mkdir build && cd build
+
+if "%1%" == "Debug" (
+	cmake .. -DCMAKE_BUILD_TYPE=Debug
+) else if "%1%" == "Normal" (
+	cmake .. -DCMAKE_BUILD_TYPE=Normal
+) else if "%1%" == "Release" (
+	cmake .. -DCMAKE_BUILD_TYPE=MinSizeRel
+) else if "%1" == "" (
+	cmake .. -DCMAKE_BUILD_TYPE=MinSizeRel
+) else (
+	echo "Unknown build type."
+	exit /b 1
 )
 
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=%BUILD_TYPE%
 cmake --build .
 cd ..

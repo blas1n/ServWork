@@ -6,12 +6,19 @@ if [ -d build ]; then
 	rm -rf build
 fi
 
-BUILD_TYPE=Release
-if [ "$1" = "" ]; then
-	BUILD_TYPE=$1
-fi
-
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+case "$1" in
+	"Debug")
+		cmake .. -DCMAKE_BUILD_TYPE=Debug;;
+	"Normal")
+		cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo;;
+	"Release"|"")
+		cmake .. -DCMAKE_BUILD_TYPE=MinSizeRel;;
+	*)
+		echo "Unknown build type."
+		exit 1;;
+esac
+
 cmake --build .
 cd ..
