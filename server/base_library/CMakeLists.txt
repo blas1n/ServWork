@@ -6,6 +6,11 @@ set (SRC_INI
 	INI.h
 )
 
+set (SRC_SOCKET
+	Socket.cpp
+	Socket.h
+)
+
 set (SRC_THREAD
 	ThreadAccesser.h
 	ThreadPool.cpp
@@ -15,6 +20,7 @@ set (SRC_THREAD
 # Target
 add_library (${PROJECT_ID} STATIC
 	${SRC_INI}
+	${SRC_SOCKET}
 	${SRC_THREAD}
 )
 
@@ -25,4 +31,5 @@ endif ()
 
 # Filters
 source_group ("INI" FILES ${SRC_INI})
+source_group ("Socket" FILES ${SRC_SOCKET})
 source_group ("Thread" FILES ${SRC_THREAD})
