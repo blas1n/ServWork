@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "Base_TCP.h"
+#include "TCP_Base.h"
 #include <WinSock2.h>
 
-class TCP_Windows final : public Base_TCP
+class TCP_Windows final : public TCP_Base
 {
 public:
 	TCP_Windows(int inPort, int inBufSize, int inQueueSize);

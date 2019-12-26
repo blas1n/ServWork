@@ -6,26 +6,26 @@
 #include "ThreadPool.h"
 
 TCP_Windows::TCP_Windows(int inPort, int inBufSize, int inQueueSize)
-	: Base_TCP(inPort, inBufSize, inQueueSize), onAccept(), serverSocket(0)
+	: TCP_Base(inPort, inBufSize, inQueueSize), onAccept(), serverSocket(0)
 {
 	Init();
 }
 
 TCP_Windows::TCP_Windows(const std::string& configPath)
-	: Base_TCP(configPath), onAccept(), serverSocket(0)
+	: TCP_Base(configPath), onAccept(), serverSocket(0)
 {
 	Init();
 }
 
 TCP_Windows::TCP_Windows(TCP_Windows&& other) noexcept
-	: Base_TCP(std::move(other)),
+	: TCP_Base(std::move(other)),
 	onAccept(std::move(other.onAccept)),
 	serverSocket(std::move(other.serverSocket))
 {}
 
 TCP_Windows& TCP_Windows::operator=(TCP_Windows&& other) noexcept
 {
-	Base_TCP::operator=(std::move(other));
+	TCP_Base::operator=(std::move(other));
 	onAccept = std::move(other.onAccept);
 	serverSocket = std::move(other.serverSocket);
 	return *this;

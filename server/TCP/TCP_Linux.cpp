@@ -15,26 +15,26 @@
 #include "ThreadPool.h"
 
 TCP_Linux::TCP_Linux(int inPort, int inBufSize, int inQueueSize)
-	: Base_TCP(inPort, inBufSize, inQueueSize), onAccept(), serverSocket(0)
+	: TCP_Base(inPort, inBufSize, inQueueSize), onAccept(), serverSocket(0)
 {
 	Init();
 }
 
 TCP_Linux::TCP_Linux(const std::string& configPath)
-	: Base_TCP(configPath), onAccept(), serverSocket(0)
+	: TCP_Base(configPath), onAccept(), serverSocket(0)
 {
 	Init();
 }
 
 TCP_Linux::TCP_Linux(TCP_Linux&& other) noexcept
-	: Base_TCP(std::move(other)),
+	: TCP_Base(std::move(other)),
 	onAccept(std::move(other.onAccept)),
 	serverSocket(std::move(other.serverSocket))
 {}
 
 TCP_Linux& TCP_Linux::operator=(TCP_Linux&& other) noexcept
 {
-	Base_TCP::operator=(std::move(other));
+	TCP_Base::operator=(std::move(other));
 	onAccept = std::move(other.onAccept);
 	serverSocket = std::move(other.serverSocket);
 	return *this;

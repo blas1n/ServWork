@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "Base_TCP.h"
+#include "TCP_Base.h"
 
-class TCP_Linux final : public Base_TCP
+class TCP_Linux final : public TCP_Base
 {
 public:
 	TCP_Linux(int inPort, int inBufSize, int inQueueSize);
