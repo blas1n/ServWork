@@ -1,29 +1,29 @@
 #if PLATFORM_WINDOWS
 
-#include "Windows_TCP.h"
+#include "TCP_Windows.h"
 #include <iostream>
 #include <WS2tcpip.h>
 #include "ThreadPool.h"
 
-Windows_TCP::Windows_TCP(int inPort, int inBufSize, int inQueueSize)
+TCP_Windows::TCP_Windows(int inPort, int inBufSize, int inQueueSize)
 	: Base_TCP(inPort, inBufSize, inQueueSize), onAccept(), serverSocket(0)
 {
 	Init();
 }
 
-Windows_TCP::Windows_TCP(const std::string& configPath)
+TCP_Windows::TCP_Windows(const std::string& configPath)
 	: Base_TCP(configPath), onAccept(), serverSocket(0)
 {
 	Init();
 }
 
-Windows_TCP::Windows_TCP(Windows_TCP&& other) noexcept
+TCP_Windows::TCP_Windows(TCP_Windows&& other) noexcept
 	: Base_TCP(std::move(other)),
 	onAccept(std::move(other.onAccept)),
 	serverSocket(std::move(other.serverSocket))
 {}
 
-Windows_TCP& Windows_TCP::operator=(Windows_TCP&& other) noexcept
+TCP_Windows& TCP_Windows::operator=(TCP_Windows&& other) noexcept
 {
 	Base_TCP::operator=(std::move(other));
 	onAccept = std::move(other.onAccept);
@@ -31,13 +31,13 @@ Windows_TCP& Windows_TCP::operator=(Windows_TCP&& other) noexcept
 	return *this;
 }
 
-Windows_TCP::~Windows_TCP()
+TCP_Windows::~TCP_Windows()
 {
 	closesocket(serverSocket);
 	WSACleanup();
 }
 
-void Windows_TCP::Run()
+void TCP_Windows::Run()
 {
 	SOCKADDR_IN clientAddr;
 	int clientLen = sizeof(clientAddr);
@@ -63,7 +63,7 @@ void Windows_TCP::Run()
 	}
 }
 
-void Windows_TCP::Init()
+void TCP_Windows::Init()
 {
 	WSADATA wsaData;
 

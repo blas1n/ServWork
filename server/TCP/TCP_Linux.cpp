@@ -1,6 +1,6 @@
 #if PLATFORM_LINUX
 
-#include "Linux_TCP.h"
+#include "TCP_Linux.h"
 #include <arpa/inet.h>
 #include <cstring>
 #include <fcntl.h>
@@ -14,25 +14,25 @@
 #include <unistd.h>
 #include "ThreadPool.h"
 
-Linux_TCP::Linux_TCP(int inPort, int inBufSize, int inQueueSize)
+TCP_Linux::TCP_Linux(int inPort, int inBufSize, int inQueueSize)
 	: Base_TCP(inPort, inBufSize, inQueueSize), onAccept(), serverSocket(0)
 {
 	Init();
 }
 
-Linux_TCP::Linux_TCP(const std::string& configPath)
+TCP_Linux::TCP_Linux(const std::string& configPath)
 	: Base_TCP(configPath), onAccept(), serverSocket(0)
 {
 	Init();
 }
 
-Linux_TCP::Linux_TCP(Linux_TCP&& other) noexcept
+TCP_Linux::TCP_Linux(TCP_Linux&& other) noexcept
 	: Base_TCP(std::move(other)),
 	onAccept(std::move(other.onAccept)),
 	serverSocket(std::move(other.serverSocket))
 {}
 
-Linux_TCP& Linux_TCP::operator=(Linux_TCP&& other) noexcept
+TCP_Linux& TCP_Linux::operator=(TCP_Linux&& other) noexcept
 {
 	Base_TCP::operator=(std::move(other));
 	onAccept = std::move(other.onAccept);
@@ -40,12 +40,12 @@ Linux_TCP& Linux_TCP::operator=(Linux_TCP&& other) noexcept
 	return *this;
 }
 
-Linux_TCP::~Linux_TCP()
+TCP_Linux::~TCP_Linux()
 {
 	close(serverSocket);
 }
 
-void Linux_TCP::Run()
+void TCP_Linux::Run()
 {
 	struct sockaddr_in clientAddr;
 	socklen_t clientLen = sizeof(clientAddr);
@@ -71,7 +71,7 @@ void Linux_TCP::Run()
 	}
 }
 
-void Linux_TCP::Init()
+void TCP_Linux::Init()
 {
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serverSocket == -1)

@@ -1,8 +1,8 @@
-#include "Base_TCP.h"
+#include "TCP_Base.h"
 #include <utility>
 #include "INI.h"
 
-Base_TCP::Base_TCP(int inPort, int inBufSize, int inQueueSize)
+TCP_Base::TCP_Base(int inPort, int inBufSize, int inQueueSize)
 	: buf(nullptr),
 	queueSize(inQueueSize),
 	bufSize(inBufSize),
@@ -11,7 +11,7 @@ Base_TCP::Base_TCP(int inPort, int inBufSize, int inQueueSize)
 	buf = new char[bufSize];
 }
 
-Base_TCP::Base_TCP(const std::string& configPath)
+TCP_Base::TCP_Base(const std::string& configPath)
 	: buf(nullptr),
 	queueSize(0),
 	bufSize(0),
@@ -25,7 +25,7 @@ Base_TCP::Base_TCP(const std::string& configPath)
 	buf = new char[bufSize];
 }
 
-Base_TCP::Base_TCP(Base_TCP&& other) noexcept
+TCP_Base::TCP_Base(TCP_Base&& other) noexcept
 	: buf(std::move(other.buf)),
 	queueSize(std::move(other.queueSize)),
 	bufSize(std::move(other.bufSize)),
@@ -34,7 +34,7 @@ Base_TCP::Base_TCP(Base_TCP&& other) noexcept
 	other.buf = nullptr;
 }
 
-Base_TCP& Base_TCP::operator=(Base_TCP&& other) noexcept
+TCP_Base& TCP_Base::operator=(TCP_Base&& other) noexcept
 {
 	buf = std::move(other.buf);
 	queueSize = std::move(other.queueSize);
@@ -43,7 +43,7 @@ Base_TCP& Base_TCP::operator=(Base_TCP&& other) noexcept
 	return *this;
 }
 
-Base_TCP::~Base_TCP()
+TCP_Base::~TCP_Base()
 {
 	if (buf)
 	{

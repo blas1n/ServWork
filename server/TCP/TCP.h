@@ -1,7 +1,7 @@
 #pragma once
 
 #if PLATFORM_LINUX
-#	include "Linux_TCP.h"
+#	include "TCP_Linux.h"
 #elif PLATFORM_WINDOWS
-#	include "Windows_TCP.h"
+#	include "TCP_Windows.h"
 #endif

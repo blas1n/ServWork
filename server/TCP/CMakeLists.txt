@@ -2,18 +2,18 @@ set_project ()
 
 # Files
 set (SRC_BASE
-	Base_TCP.cpp
-	Base_TCP.h
+	TCP_Base.cpp
+	TCP_Base.h
 )
 
 set (SRC_LINUX
-	Linux_TCP.cpp
-	Linux_TCP.h
+	TCP_Linux.cpp
+	TCP_Linux.h
 )
 
 set (SRC_WINDOWS
-	Windows_TCP.cpp
-	Windows_TCP.h
+	TCP_Windows.cpp
+	TCP_Windows.h
 )
 
 set (SRC
