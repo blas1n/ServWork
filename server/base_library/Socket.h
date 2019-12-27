@@ -24,10 +24,10 @@ class Socket final
 public:
 	Socket();
 
-	Socket(const Socket& other) = delete;
+	Socket(const Socket& other) = default;
 	Socket(Socket&& other) noexcept;
 
-	Socket& operator=(const Socket& other) = delete;
+	Socket& operator=(const Socket& other) = default;
 	Socket& operator=(Socket&& other) noexcept;
 
 	~Socket();

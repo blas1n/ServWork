@@ -2,6 +2,7 @@
 #include <iostream>
 #include <utility>
 #include "INI.h"
+#include "ThreadPool.h"
 
 TCP::TCP(int inPort, int inBufSize, int inQueueSize)
 	: s(),
@@ -69,7 +70,7 @@ void TCP::Run()
 		const auto readLen = clientSocket.Recv(buf, bufSize);
 
 		if (readLen > 0)
-			AddTask(onAccept, std::move(clientSocket), buf);
+			ThreadPool::Get().AddTask(onAccept, std::move(clientSocket), buf);
 	}
 }
 

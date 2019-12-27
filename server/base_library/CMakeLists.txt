@@ -12,7 +12,6 @@ set (SRC_SOCKET
 )
 
 set (SRC_THREAD
-	ThreadAccesser.h
 	ThreadPool.cpp
 	ThreadPool.h
 )

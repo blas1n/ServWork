@@ -1,11 +1,10 @@
 #pragma once
 
-#include "ThreadAccesser.h"
 #include "Socket.h"
 #include <functional>
 #include <string>
 
-class TCP : private ThreadAccesser
+class TCP
 {
 public:
 	TCP(int inPort, int inBufSize, int inQueueSize);
@@ -17,7 +16,7 @@ public:
 	TCP& operator=(const TCP& other) = delete;
 	TCP& operator=(TCP&& other) noexcept;
 	
-	~TCP() override;
+	~TCP();
 
 	void Run();
 
@@ -36,7 +35,7 @@ private:
 	void Init(int inPort, int inBufSize, int inQueueSize);
 
 private:
-	std::function<void(Socket&&, std::byte*)> onAccept;
+	std::function<void(Socket, std::byte*)> onAccept;
 
 	Socket s;
 	std::byte* buf;
