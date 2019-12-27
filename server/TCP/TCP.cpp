@@ -61,7 +61,7 @@ TCP::~TCP()
 void TCP::Run()
 {
 	AddrIn clientAddr;
-	int clientLen = sizeof(clientAddr);
+	SockLen clientLen = sizeof(clientAddr);
 
 	while (true)
 	{
