@@ -13,7 +13,15 @@
 #	undef SOCKET_ERROR
 #	undef INVALID_SOCKET
 #elif PLATFORM_LINUX
+#	include <arpa/inet.h>
+#	include <cstring>
+#	include <fcntl.h>
+#	include <errno.h>
 #	include <sys/socket.h>
+#	include <sys/stat.h>
+#	include <sys/stat.h>
+#	include <sys/types.h>
+#	include <unistd.h>
 	using Addr = struct sockaddr;
 	using AddrIn = struct sockaddr_in;
 	using SockId = int;

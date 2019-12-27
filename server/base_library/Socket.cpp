@@ -1,18 +1,6 @@
 #include "Socket.h"
 #include <stdexcept>
 
-#if PLATFORM_LINUX
-#	include <arpa/inet.h>
-#	include <cstring>
-#	include <fcntl.h>
-#	include <errno.h>
-#	include <sys/socket.h>
-#	include <sys/stat.h>
-#	include <sys/stat.h>
-#	include <sys/types.h>
-#	include <unistd.h>
-#endif
-
 Socket::Socket()
 	: s(0) {}
 
