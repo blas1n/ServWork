@@ -7,6 +7,7 @@
 #	include <WinSock2.h>
 	using Addr = SOCKADDR;
 	using AddrIn = SOCKADDR_IN;
+	using SockId = SOCKET;
 
 #	undef SOCKET_ERROR
 #	undef INVALID_SOCKET
@@ -14,6 +15,7 @@
 #	include <sys/socket.h>
 	using Addr = struct sockaddr;
 	using AddrIn = struct sockaddr_in;
+	using SockId = int;
 #endif
 
 constexpr auto INVALID_SOCKET = ~0;
@@ -41,5 +43,5 @@ public:
 	int Send(const std::byte* buf, int len);
 
 private:
-	SOCKET s;
+	SockId s;
 };
