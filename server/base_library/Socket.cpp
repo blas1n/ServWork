@@ -1,11 +1,12 @@
 #include "Socket.h"
 #include <stdexcept>
 
-Socket::Socket()
-	: s(0) {}
+Socket::Socket(int inLen)
+	: s(0), bufLen(inLen) {}
 
 Socket::Socket(Socket&& other) noexcept
-	: s(std::move(other.s))
+	: s(std::move(other.s)),
+	bufLen(std::move(other.bufLen))
 {
 	other.s = 0;
 }
@@ -13,6 +14,7 @@ Socket::Socket(Socket&& other) noexcept
 Socket& Socket::operator=(Socket&& other) noexcept
 {
 	s = std::move(other.s);
+	bufLen = std::move(other.bufLen);
 	other.s = 0;
 	return *this;
 }
@@ -77,17 +79,17 @@ void Socket::Close()
 
 Socket Socket::Accept(AddrIn& addr, SockLen& len)
 {
-	Socket ret;
+	Socket ret{ bufLen };
 	ret.s = accept(s, reinterpret_cast<Addr*>(&addr), &len);
 	return ret;
 }
 
-int Socket::Recv(std::byte* buf, int len)
+int Socket::Recv(std::byte* buf)
 {
-	return recv(s, reinterpret_cast<char*>(buf), len, 0);
+	return recv(s, reinterpret_cast<char*>(buf), bufLen, 0);
 }
 
-int Socket::Send(const std::byte* buf, int len)
+int Socket::Send(const std::byte* buf)
 {
-	return send(s, reinterpret_cast<const char*>(buf), len, 0);
+	return send(s, reinterpret_cast<const char*>(buf), bufLen, 0);
 }

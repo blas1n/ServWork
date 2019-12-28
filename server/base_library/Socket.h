@@ -34,7 +34,7 @@ constexpr auto SOCKET_ERROR = -1;
 class Socket final
 {
 public:
-	Socket();
+	Socket(int inLen);
 
 	Socket(const Socket& other) = default;
 	Socket(Socket&& other) noexcept;
@@ -49,9 +49,10 @@ public:
 
 	Socket Accept(AddrIn& addr, SockLen& len);
 
-	int Recv(std::byte* buf, int len);
-	int Send(const std::byte* buf, int len);
+	int Recv(std::byte* buf);
+	int Send(const std::byte* buf);
 
 private:
 	SockId s;
+	int bufLen;
 };
