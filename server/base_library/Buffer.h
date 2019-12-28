@@ -77,7 +77,17 @@ namespace ServWork
 
 		inline operator const char*() const
 		{
-			return reinterpret_cast<char*>(buffer);
+			return reinterpret_cast<const char*>(buffer);
+		}
+
+		inline operator void*()
+		{
+			return reinterpret_cast<void*>(buffer);
+		}
+
+		inline operator const void*() const
+		{
+			return reinterpret_cast<const void*>(buffer);
 		}
 
 		inline operator bool() const
