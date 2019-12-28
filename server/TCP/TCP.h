@@ -31,6 +31,16 @@ public:
 		return port;
 	}
 
+	inline int GetBufferSize() const noexcept
+	{
+		return bufSize;
+	}
+
+	inline int GetQueueSize() const noexcept
+	{
+		return queueSize;
+	}
+
 private:
 	void Init(int inPort, int inBufSize, int inQueueSize);
 

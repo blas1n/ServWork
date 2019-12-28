@@ -32,5 +32,4 @@
 *.app
 
 [Bb]uild/
-output/
 .vs/
