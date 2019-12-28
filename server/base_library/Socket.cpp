@@ -88,10 +88,20 @@ namespace ServWork
 
 	int Socket::Recv(byte* buf)
 	{
+		return Recv(reinterpret_cast<char*>(buf));
+	}
+
+	int Socket::Recv(char* buf)
+	{
 		return recv(s, reinterpret_cast<char*>(buf), bufLen, 0);
 	}
 
 	int Socket::Send(const byte* buf)
+	{
+		return Send(reinterpret_cast<const char*>(buf));
+	}
+
+	int Socket::Send(const char* buf)
 	{
 		return send(s, reinterpret_cast<const char*>(buf), bufLen, 0);
 	}

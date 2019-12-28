@@ -62,7 +62,10 @@ namespace ServWork
 		Socket Accept(AddrIn& addr, SockLen& len);
 
 		int Recv(byte* buf);
+		int Recv(char* buf);
+
 		int Send(const byte* buf);
+		int Send(const char* buf);
 
 	private:
 		SockId s;
