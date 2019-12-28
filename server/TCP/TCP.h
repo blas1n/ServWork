@@ -4,52 +4,55 @@
 #include <functional>
 #include <string>
 
-class TCP
+namespace ServWork
 {
-public:
-	TCP(int inPort, int inBufSize, int inQueueSize);
-	TCP(const std::string& configPath);
-
-	TCP(const TCP& other) = delete;
-	TCP(TCP&& other) noexcept;
-	
-	TCP& operator=(const TCP& other) = delete;
-	TCP& operator=(TCP&& other) noexcept;
-	
-	~TCP();
-
-	void Run();
-
-	template <class FN>
-	inline void SetOnAccept(FN&& fn)
+	class TCP
 	{
-		onAccept = fn;
-	}
+	public:
+		TCP(int inPort, int inBufSize, int inQueueSize);
+		TCP(const std::string& configPath);
 
-	inline int GetPort() const noexcept
-	{
-		return port;
-	}
+		TCP(const TCP& other) = delete;
+		TCP(TCP&& other) noexcept;
 
-	inline int GetBufferSize() const noexcept
-	{
-		return bufSize;
-	}
+		TCP& operator=(const TCP& other) = delete;
+		TCP& operator=(TCP&& other) noexcept;
 
-	inline int GetQueueSize() const noexcept
-	{
-		return queueSize;
-	}
+		~TCP();
 
-private:
-	void Init(int inPort, int inBufSize, int inQueueSize);
+		void Run();
 
-private:
-	std::function<void(Socket, const std::byte*)> onAccept;
+		template <class FN>
+		inline void SetOnAccept(FN&& fn)
+		{
+			onAccept = fn;
+		}
 
-	Socket s;
-	std::byte* buf;
-	int queueSize;
-	int bufSize;
-	int port;
-};
+		inline int GetPort() const noexcept
+		{
+			return port;
+		}
+
+		inline int GetBufferSize() const noexcept
+		{
+			return bufSize;
+		}
+
+		inline int GetQueueSize() const noexcept
+		{
+			return queueSize;
+		}
+
+	private:
+		void Init(int inPort, int inBufSize, int inQueueSize);
+
+	private:
+		std::function<void(Socket, const byte*)> onAccept;
+
+		Socket s;
+		byte* buf;
+		int queueSize;
+		int bufSize;
+		int port;
+	};
+}

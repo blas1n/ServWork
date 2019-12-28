@@ -5,10 +5,14 @@
 
 #if PLATFORM_WINDOWS
 #	include <WinSock2.h>
+
+namespace ServWork
+{
 	using Addr = SOCKADDR;
 	using AddrIn = SOCKADDR_IN;
 	using SockId = SOCKET;
 	using SockLen = int;
+}
 
 #	undef SOCKET_ERROR
 #	undef INVALID_SOCKET
@@ -22,37 +26,46 @@
 #	include <sys/stat.h>
 #	include <sys/types.h>
 #	include <unistd.h>
+
+namespace ServWork
+{
 	using Addr = struct sockaddr;
 	using AddrIn = struct sockaddr_in;
 	using SockId = int;
 	using SockLen = socklen_t;
+}
 #endif
 
-constexpr auto INVALID_SOCKET = ~0;
-constexpr auto SOCKET_ERROR = -1;
-
-class Socket final
+namespace ServWork
 {
-public:
-	Socket(int inLen);
+	constexpr auto INVALID_SOCKET = ~0;
+	constexpr auto SOCKET_ERROR = -1;
 
-	Socket(const Socket& other) = default;
-	Socket(Socket&& other) noexcept;
+	using byte = unsigned char;
 
-	Socket& operator=(const Socket& other) = default;
-	Socket& operator=(Socket&& other) noexcept;
+	class Socket final
+	{
+	public:
+		Socket(int inLen);
 
-	~Socket();
+		Socket(const Socket& other) = default;
+		Socket(Socket&& other) noexcept;
 
-	void Open(int port, int queueSize);
-	void Close();
+		Socket& operator=(const Socket& other) = default;
+		Socket& operator=(Socket&& other) noexcept;
 
-	Socket Accept(AddrIn& addr, SockLen& len);
+		~Socket();
 
-	int Recv(std::byte* buf);
-	int Send(const std::byte* buf);
+		void Open(int port, int queueSize);
+		void Close();
 
-private:
-	SockId s;
-	int bufLen;
-};
+		Socket Accept(AddrIn& addr, SockLen& len);
+
+		int Recv(byte* buf);
+		int Send(const byte* buf);
+
+	private:
+		SockId s;
+		int bufLen;
+	};
+}

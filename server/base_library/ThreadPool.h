@@ -8,58 +8,61 @@
 #include <utility>
 #include <vector>
 
-class ThreadPool final
+namespace ServWork
 {
-private:
-	template <class RetType>
-	using TaskRetType = std::enable_if_t<!std::is_void_v<RetType>, RetType>;
-
-public:
-	static inline ThreadPool& Get() noexcept
+	class ThreadPool final
 	{
-		static ThreadPool instance;
-		return instance;
-	}
+	private:
+		template <class RetType>
+		using TaskRetType = std::enable_if_t<!std::is_void_v<RetType>, RetType>;
 
-	template <class Fn, class... Args>
-	std::future<TaskRetType<std::invoke_result_t<Fn, Args...>>>
-		AddTask(Fn&& fn, Args&&... args) noexcept
-	{
-		auto task = std::make_shared<
-			std::packaged_task<std::invoke_result_t<Fn, Args...>()>>(
-				std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...)
-			);
+	public:
+		static inline ThreadPool& Get() noexcept
+		{
+			static ThreadPool instance;
+			return instance;
+		}
 
-		taskMutex.lock();
-		tasks.push([task] { (*task)(); });
-		taskMutex.unlock();
+		template <class Fn, class... Args>
+		std::future<TaskRetType<std::invoke_result_t<Fn, Args...>>>
+			AddTask(Fn&& fn, Args&&... args) noexcept
+		{
+			auto task = std::make_shared<
+				std::packaged_task<std::invoke_result_t<Fn, Args...>()>>(
+					std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...)
+					);
 
-		cv.notify_one();
-		return task->get_future();
-	}
+			taskMutex.lock();
+			tasks.push([task] { (*task)(); });
+			taskMutex.unlock();
 
-	template <class Fn, class... Args>
-	void AddTask(Fn&& fn, Args&&... args) noexcept
-	{
-		auto task = std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...);
+			cv.notify_one();
+			return task->get_future();
+		}
 
-		taskMutex.lock();
-		tasks.push(std::move(task));
-		taskMutex.unlock();
+		template <class Fn, class... Args>
+		void AddTask(Fn&& fn, Args&&... args) noexcept
+		{
+			auto task = std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...);
 
-		cv.notify_one();
-	}
+			taskMutex.lock();
+			tasks.push(std::move(task));
+			taskMutex.unlock();
 
-private:
-	ThreadPool();
-	~ThreadPool();
+			cv.notify_one();
+		}
 
-	void ThreadWork() noexcept;
+	private:
+		ThreadPool();
+		~ThreadPool();
 
-private:
-	std::vector<std::thread> threads;
-	std::queue<std::function<void()>> tasks;
-	std::condition_variable cv;
-	std::mutex taskMutex;
-	bool isEnd;
-};
+		void ThreadWork() noexcept;
+
+	private:
+		std::vector<std::thread> threads;
+		std::queue<std::function<void()>> tasks;
+		std::condition_variable cv;
+		std::mutex taskMutex;
+		bool isEnd;
+	};
+}
