@@ -3,12 +3,11 @@
 
 namespace ServWork
 {
-	Socket::Socket(int inLen)
-		: s(0), bufLen(inLen) {}
+	Socket::Socket()
+		: s(0) {}
 
 	Socket::Socket(Socket&& other) noexcept
-		: s(std::move(other.s)),
-		bufLen(std::move(other.bufLen))
+		: s(std::move(other.s))
 	{
 		other.s = 0;
 	}
@@ -16,7 +15,6 @@ namespace ServWork
 	Socket& Socket::operator=(Socket&& other) noexcept
 	{
 		s = std::move(other.s);
-		bufLen = std::move(other.bufLen);
 		other.s = 0;
 		return *this;
 	}
@@ -81,28 +79,22 @@ namespace ServWork
 
 	Socket Socket::Accept(AddrIn& addr, SockLen& len)
 	{
-		Socket ret{ bufLen };
+		if (!s) throw std::logic_error{ socketNotOpen };
+
+		Socket ret;
 		ret.s = accept(s, reinterpret_cast<Addr*>(&addr), &len);
 		return ret;
 	}
 
-	int Socket::Recv(byte* buf)
+	int Socket::Recv(Buffer& buf)
 	{
-		return Recv(reinterpret_cast<char*>(buf));
+		if (!s) throw std::logic_error{ socketNotOpen };
+		return recv(s, buf, buf.GetBufferSize(), 0);
 	}
 
-	int Socket::Recv(char* buf)
+	int Socket::Send(const Buffer& buf)
 	{
-		return recv(s, reinterpret_cast<char*>(buf), bufLen, 0);
-	}
-
-	int Socket::Send(const byte* buf)
-	{
-		return Send(reinterpret_cast<const char*>(buf));
-	}
-
-	int Socket::Send(const char* buf)
-	{
-		return send(s, reinterpret_cast<const char*>(buf), bufLen, 0);
+		if (!s) throw std::logic_error{ socketNotOpen };
+		return send(s, buf, buf.GetBufferSize(), 0);
 	}
 }

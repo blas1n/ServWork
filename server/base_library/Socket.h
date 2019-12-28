@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <string>
+#include "Buffer.h"
 
 #if PLATFORM_WINDOWS
 #	include <WinSock2.h>
@@ -41,17 +42,15 @@ namespace ServWork
 	constexpr auto INVALID_SOCKET = ~0;
 	constexpr auto SOCKET_ERROR = -1;
 
-	using byte = unsigned char;
-
 	class Socket final
 	{
 	public:
-		Socket(int inLen);
+		Socket();
 
-		Socket(const Socket& other) = default;
+		Socket(const Socket&) = default;
 		Socket(Socket&& other) noexcept;
 
-		Socket& operator=(const Socket& other) = default;
+		Socket& operator=(const Socket&) = default;
 		Socket& operator=(Socket&& other) noexcept;
 
 		~Socket();
@@ -61,14 +60,12 @@ namespace ServWork
 
 		Socket Accept(AddrIn& addr, SockLen& len);
 
-		int Recv(byte* buf);
-		int Recv(char* buf);
-
-		int Send(const byte* buf);
-		int Send(const char* buf);
+		int Recv(Buffer& buf);
+		int Send(const Buffer& buf);
 
 	private:
 		SockId s;
-		int bufLen;
+
+		constexpr static const char* socketNotOpen = "This socket is not opened.";
 	};
 }

@@ -6,24 +6,24 @@
 
 namespace ServWork
 {
-	class TCP
+	class TCP final
 	{
 	public:
-		TCP(int inPort, int inBufSize, int inQueueSize);
+		TCP(int inPort, int inQueueSize);
 		TCP(const std::string& configPath);
 
-		TCP(const TCP& other) = delete;
-		TCP(TCP&& other) noexcept;
+		TCP(const TCP&) = delete;
+		TCP(TCP&& other) noexcept = default;
 
-		TCP& operator=(const TCP& other) = delete;
-		TCP& operator=(TCP&& other) noexcept;
+		TCP& operator=(const TCP&) = delete;
+		TCP& operator=(TCP&& other) noexcept = default;
 
-		~TCP();
+		~TCP() = default;
 
 		void Run();
 
-		template <class FN>
-		inline void SetOnAccept(FN&& fn)
+		template <class Fn>
+		inline void SetOnAccept(Fn&& fn)
 		{
 			onAccept = fn;
 		}
@@ -33,26 +33,19 @@ namespace ServWork
 			return port;
 		}
 
-		inline int GetBufferSize() const noexcept
-		{
-			return bufSize;
-		}
-
 		inline int GetQueueSize() const noexcept
 		{
 			return queueSize;
 		}
 
 	private:
-		void Init(int inPort, int inBufSize, int inQueueSize);
+		void Init(int inPort, int inQueueSize);
 
 	private:
-		std::function<void(Socket, const byte*)> onAccept;
+		std::function<void(Socket)> onAccept;
 
 		Socket s;
-		byte* buf;
 		int queueSize;
-		int bufSize;
 		int port;
 	};
 }

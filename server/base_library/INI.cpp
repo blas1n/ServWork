@@ -4,18 +4,8 @@
 
 namespace ServWork
 {
-	void INI::Set(const std::string& key, const std::string& value)
-	{
-		map[key] = value;
-
-		std::ofstream out{ path };
-		if (!out.is_open()) throw std::runtime_error{ "Cannot open config file" };
-
-		for (const auto& pair : map)
-			out << pair.first << "=" << pair.second << std::endl;
-	}
-
-	void INI::Init()
+	INI::INI(const std::string& inPath)
+		: map(), path(inPath)
 	{
 		std::ifstream in{ path };
 		if (!in.is_open()) throw std::runtime_error{ "Cannot open config file" };
@@ -33,5 +23,17 @@ namespace ServWork
 		}
 
 		in.close();
+	}
+
+	void INI::Set(const std::string& key, const std::string& value)
+	{
+		map[key] = value;
+
+		std::ofstream out{ path };
+		if (!out.is_open())
+			throw std::runtime_error{ "Cannot open config file" };
+
+		for (const auto& pair : map)
+			out << pair.first << "=" << pair.second << std::endl;
 	}
 }

@@ -8,17 +8,7 @@ namespace ServWork
 	class INI final
 	{
 	public:
-		INI(const std::string& inPath)
-			: map(), path(inPath)
-		{
-			Init();
-		}
-
-		INI(std::string&& inPath)
-			: map(), path(std::move(inPath))
-		{
-			Init();
-		}
+		INI(const std::string& inPath);
 
 		INI(const INI& other) = default;
 		INI(INI&& other) = default;
@@ -28,7 +18,7 @@ namespace ServWork
 
 		~INI() = default;
 
-		const std::string& Get(const std::string& key) const
+		inline const std::string& Get(const std::string& key) const
 		{
 			return (*map.find(key)).second;
 		}
@@ -36,8 +26,6 @@ namespace ServWork
 		void Set(const std::string& key, const std::string& value);
 
 	private:
-		void Init();
-
 		std::map<std::string, std::string> map;
 		std::string path;
 	};
