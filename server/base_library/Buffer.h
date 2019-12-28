@@ -36,6 +36,14 @@ namespace ServWork
 			return *this;
 		}
 
+		byte operator[](size_t index) const
+		{
+			if (index >= bufferSize)
+				throw std::logic_error{ "Index out of bound." };
+
+			return buffer[index];
+		}
+
 		inline void Init() noexcept
 		{
 			memset(*this, 0, bufferSize);
