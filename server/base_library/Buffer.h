@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstring>
+
 namespace ServWork
 {
 	using byte = unsigned char;
@@ -19,6 +21,29 @@ namespace ServWork
 		Buffer& operator=(Buffer&& other) noexcept;
 
 		~Buffer();
+
+		inline void Set(size_t index, const char* content)
+		{
+			strncpy(static_cast<char*>(*this) + index,
+				content, strnlen(content, bufferSize - index));
+		}
+
+		inline void Set(size_t index, const byte* content)
+		{
+			Set(index, reinterpret_cast<const char*>(content));
+		}
+
+		inline Buffer& operator=(const char* content)
+		{
+			Set(0, content);
+			return *this;
+		}
+
+		inline Buffer& operator=(const byte* content)
+		{
+			Set(0, content);
+			return *this;
+		}
 
 		inline size_t GetBufferSize() const
 		{
