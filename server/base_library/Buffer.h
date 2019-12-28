@@ -22,10 +22,20 @@ namespace ServWork
 
 		~Buffer();
 
+		inline char* Get(size_t index)
+		{
+			return static_cast<char*>(*this) + index;
+		}
+
+		inline const char* Get(size_t index) const
+		{
+			return static_cast<const char*>(*this) + index;
+		}
+
 		inline void Set(size_t index, const char* content)
 		{
-			strncpy(static_cast<char*>(*this) + index,
-				content, strnlen(content, bufferSize - index));
+			strncpy(Get(index), content,
+				strnlen(content, bufferSize - index));
 		}
 
 		inline void Set(size_t index, const byte* content)
