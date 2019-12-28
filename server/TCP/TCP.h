@@ -45,7 +45,7 @@ private:
 	void Init(int inPort, int inBufSize, int inQueueSize);
 
 private:
-	std::function<void(Socket, std::byte*)> onAccept;
+	std::function<void(Socket, const std::byte*)> onAccept;
 
 	Socket s;
 	std::byte* buf;
