@@ -22,6 +22,25 @@ namespace ServWork
 
 		~Buffer();
 
+		Buffer& operator=(const char* content)
+		{
+			Init();
+			Set(0, content);
+			return *this;
+		}
+
+		Buffer& operator=(const byte* content)
+		{
+			Init();
+			Set(0, content);
+			return *this;
+		}
+
+		inline void Init() noexcept
+		{
+			memset(*this, 0, bufferSize);
+		}
+
 		inline char* Get(size_t index)
 		{
 			return static_cast<char*>(*this) + index;
@@ -41,18 +60,6 @@ namespace ServWork
 		inline void Set(size_t index, const byte* content)
 		{
 			Set(index, reinterpret_cast<const char*>(content));
-		}
-
-		inline Buffer& operator=(const char* content)
-		{
-			Set(0, content);
-			return *this;
-		}
-
-		inline Buffer& operator=(const byte* content)
-		{
-			Set(0, content);
-			return *this;
 		}
 
 		inline size_t GetBufferSize() const
