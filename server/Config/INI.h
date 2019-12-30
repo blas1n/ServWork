@@ -25,6 +25,16 @@ namespace ServWork
 
 		void Set(const std::string& key, const std::string& value);
 
+		inline const std::map<std::string, std::string>& GetAll() const noexcept
+		{
+			return map;
+		}
+
+		inline const std::string& GetPath() const noexcept
+		{
+			return path;
+		}
+
 	private:
 		std::map<std::string, std::string> map;
 		std::string path;
