@@ -1,12 +1,11 @@
 #pragma once
 
+#include "Core.h"
 #include <cstring>
 #include <stdexcept>
 
 namespace ServWork
 {
-	using byte = unsigned char;
-
 	class Buffer final
 	{
 	public:
