@@ -12,7 +12,6 @@ set (SRC_INI
 )
 
 set (SRC_STRING_MAPPER
-	StringMapper.cpp
 	StringMapper.h
 )
 

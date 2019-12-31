@@ -2,22 +2,13 @@
 
 #include <map>
 #include <string>
+#include "INI.h"
 
-namespace ServWork
+namespace ServWork::StringMapper
 {
-	class StringMapper final
+	static inline const std::string& Get(const std::string& key)
 	{
-	public:
-		static void Init();
-
-		static inline const std::string& Get(const std::string& key)
-		{
-			return mapper[key];
-		}
-
-	private:
-		constexpr static char* PATH = "String.ini";
-
-		static std::map<std::string, std::string> mapper;
-	};
+		static INI config{ "String.ini" };
+		return config.Get(key);
+	}
 }
