@@ -4,18 +4,14 @@
 #include <thread>
 #include "Config.h"
 #include "Name.h"
-#include "Reactor.h"
 
 namespace ServWork
 {
 	BaseSocket::BaseSocket(SockId id/*= INVALID_SOCKET*/)
-		: s(id),
-		handle(nullptr) {}
+		: s(id) {}
 
 	BaseSocket::BaseSocket(BaseSocket&& other) noexcept
-		: s(std::move(other.s)),
-		handle(std::move(other.handle)),
-		reactor(std::move(other.reactor))
+		: s(std::move(other.s))
 	{
 		other.s = 0;
 	}
@@ -23,8 +19,6 @@ namespace ServWork
 	BaseSocket& BaseSocket::operator=(BaseSocket&& other) noexcept
 	{
 		s = std::move(other.s);
-		handle = std::move(other.handle);
-		reactor = std::move(other.reactor);
 		other.s = 0;
 		return *this;
 	}
@@ -81,38 +75,4 @@ namespace ServWork
 		
 		return true;
 	}	
-
-	void BaseSocket::ProcessRecvEvent()
-	{
-		::WSAAsyncSelect(s, handle, Config::notifyId, GetDefaultEvent());
-
-		uint8 key = 0;
-		recv(s, reinterpret_cast<char*>(&key), 1, 0);
-
-		if (key == Config::checkKey)
-		{
-			Close();
-			return;
-		}
-
-		uint8 id = 0;
-		recv(s, reinterpret_cast<char*>(&id), 1, 0);
-
-		uint32 size = 0;
-		recv(s, reinterpret_cast<char*>(&size), sizeof(uint32), 0);
-
-		Buffer buf{ size };
-
-		if (size > 0)
-		{
-			if (!Recv(buf, size))
-			{
-				Close();
-				return;
-			}
-		}
-
-		reactor->OnReceive(*this, id, std::move(buf));
-		::WSAAsyncSelect(s, handle, Config::notifyId, GetDefaultEvent() | FD_READ);
-	}
 }

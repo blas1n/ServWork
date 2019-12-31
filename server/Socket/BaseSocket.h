@@ -2,7 +2,6 @@
 
 #include "Def.h"
 #include <type_traits>
-#include "Reactor.h"
 
 namespace ServWork
 {
@@ -19,25 +18,11 @@ namespace ServWork
 
 		virtual ~BaseSocket();
 
-		virtual void Open() = 0;
-		virtual void Close() = 0;
+		virtual void Open() {}
+		virtual void Close() {}
 
 		bool Send(byte id, Buffer& buf) const;
 		bool Recv(Buffer& buf, size_t size) const;
-
-		void ProcessRecvEvent();
-
-		inline void SetHandle(HWND inHandle) noexcept { handle = inHandle; }
-		
-		inline Reactor* GetReactor() const noexcept
-		{
-			return reactor;
-		}
-
-		inline void SetReactor(Reactor* inReactor) noexcept
-		{
-			reactor = inReactor;
-		}
 
 		virtual inline long GetDefaultEvent() const noexcept
 		{
@@ -46,8 +31,6 @@ namespace ServWork
 
 	protected:
 		SockId s;
-		HWND handle;
-		Reactor* reactor;
 
 	private:
 		friend bool operator==(const BaseSocket& lhs, const BaseSocket& rhs);
