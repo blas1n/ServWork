@@ -2,13 +2,14 @@
 
 #include "Def.h"
 #include <type_traits>
+#include "Reactor.h"
 
 namespace ServWork
 {
 	class BaseSocket
 	{
 	public:
-		BaseSocket();
+		BaseSocket(SockId id = INVALID_SOCKET);
 
 		BaseSocket(const BaseSocket&) = default;
 		BaseSocket(BaseSocket&& other) noexcept;
@@ -24,11 +25,20 @@ namespace ServWork
 		bool Send(byte id, Buffer& buf) const;
 		bool Recv(Buffer& buf, size_t size) const;
 
-		template <class Reactor>
 		void ProcessRecvEvent();
 
 		inline void SetHandle(HWND inHandle) noexcept { handle = inHandle; }
 		
+		inline Reactor* GetReactor() const noexcept
+		{
+			return reactor;
+		}
+
+		inline void SetReactor(Reactor* inReactor) noexcept
+		{
+			reactor = inReactor;
+		}
+
 		virtual inline long GetDefaultEvent() const noexcept
 		{
 			return FD_CLOSE;
@@ -36,45 +46,42 @@ namespace ServWork
 
 	protected:
 		SockId s;
+		HWND handle;
+		Reactor* reactor;
 
 	private:
-		HWND handle;
+		friend bool operator==(const BaseSocket& lhs, const BaseSocket& rhs);
+		friend bool operator==(const BaseSocket& lhs, SockId rhs);
+		friend bool operator==(SockId lhs, const BaseSocket& rhs);
 	};
 
-	template <class Reactor>
-	void BaseSocket::ProcessRecvEvent()
+	bool operator==(const BaseSocket& lhs, const BaseSocket& rhs)
 	{
-		::WSAAsyncSelect(s, handle, Config::notifyId, GetDefaultEvent());
+		return lhs.s == rhs.s;
+	}
 
-		uint8 key = 0;
-		recv(s, reinterpret_cast<char*>(&key), 1, 0);
+	bool operator!=(const BaseSocket& lhs, const BaseSocket& rhs)
+	{
+		return !(lhs == rhs);
+	}
 
-		if (key == Config::checkKey)
-		{
-			Close();
-			return;
-		}
+	bool operator==(const BaseSocket& lhs, SockId rhs)
+	{
+		return lhs.s == rhs;
+	}
 
-		uint8 id = 0;
-		recv(s, reinterpret_cast<char*>(&id), 1, 0);
+	bool operator!=(const BaseSocket& lhs, SockId rhs)
+	{
+		return !(lhs == rhs);
+	}
 
-		uint32 size = 0;
-		recv(s, reinterpret_cast<char*>(&size), sizeof(uint32), 0);
+	bool operator==(SockId lhs, const BaseSocket& rhs)
+	{
+		return lhs == rhs.s;
+	}
 
-		Buffer buf{ size };
-
-		if (size > 0)
-		{
-			if (!Recv(buf))
-			{
-				Close();
-				return;
-			}
-		}
-
-		if (Reactor::OnReceive(*this, id, buf))
-		{
-			::WSAAsyncSelect(s, handle, Config::notifyId, GetDefaultEvent() | FD_READ);
-		}
+	bool operator!=(SockId lhs, const BaseSocket& rhs)
+	{
+		return !(lhs == rhs);
 	}
 }
