@@ -21,7 +21,7 @@ namespace ServWork
 	using int64 = signed long long;
 	
 #pragma pack(push, 1)
-	struct Header final
+	extern "C" struct Header
 	{
 		uint8 check;
 		uint8 id;
