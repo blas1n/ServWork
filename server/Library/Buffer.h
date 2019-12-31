@@ -12,8 +12,8 @@ namespace ServWork
 		Buffer() = default;
 		Buffer(std::nullptr_t) : Buffer() {}
 
-		Buffer(size_t inBufferSize);
-		
+		Buffer(size_t bufferSize);
+
 		Buffer(const Buffer& other);
 		Buffer(Buffer&& other) noexcept;
 
@@ -38,80 +38,125 @@ namespace ServWork
 
 		byte operator[](size_t index) const
 		{
-			if (index >= bufferSize)
+			if (index >= curBufferSize)
 				throw std::logic_error{ "Index out of bound." };
 
 			return buffer[index];
 		}
 
+		inline Buffer& operator+=(const char* content)
+		{
+			Set(curBufferSize, content);
+			return *this;
+		}
+
+		template <size_t N>
+		inline Buffer& operator+=(const byte(&content)[N])
+		{
+			Set(curBufferSize, content);
+			return *this;
+		}
+
+		template <class T>
+		inline Buffer& operator+=(const T& value)
+		{
+			Set(curBufferSize, value);
+			return *this
+		}
+
+		Buffer& operator<<=(size_t index) noexcept;
+		Buffer& operator>>=(size_t index) noexcept;
+
 		inline void Init() noexcept
 		{
-			memset(*this, 0, bufferSize);
+			curBufferSize = 0;
+			memset(*this, 0, maxBufferSize);
 		}
 
 		inline char* Get(size_t index)
 		{
+			if (index >= curBufferSize)
+				throw std::logic_error{ "Index out of bound." };
+
 			return static_cast<char*>(*this) + index;
 		}
 
 		inline const char* Get(size_t index) const
 		{
+			if (index >= curBufferSize)
+				throw std::logic_error{ "Index out of bound." };
+
 			return static_cast<const char*>(*this) + index;
 		}
 
-		inline void Set(size_t index, const char* content)
+		void Set(size_t index, const char* content);
+		void Set(size_t index, const char* content, size_t size);
+
+		template <size_t N>
+		inline void Set(size_t index, const byte(&content)[N])
 		{
-			strncpy(Get(index), content,
-				strnlen(content, bufferSize - index));
+			Set(index, reinterpret_cast<const char*>(content), N);
 		}
 
-		inline void Set(size_t index, const byte* content)
+		inline void Set(size_t index, const byte* content, size_t size)
 		{
-			Set(index, reinterpret_cast<const char*>(content));
+			Set(index, reinterpret_cast<const char*>(content), size);
 		}
 
-		inline size_t GetBufferSize() const
+		template <class T>
+		inline void Set(size_t index, const T& value)
 		{
-			return bufferSize;
+			Set(index, reinterpret_cast<const byte*>(&value), sizeof(T));
 		}
 
-		inline operator byte*()
+		inline size_t GetCurBufferSize() const noexcept
+		{
+			return curBufferSize;
+		}
+
+		inline size_t GetMaxBufferSize() const noexcept
+		{
+			return maxBufferSize;
+		}
+
+		inline operator byte*() noexcept
 		{
 			return buffer;
 		}
 
-		inline operator const byte*() const
+		inline operator const byte*() const noexcept
 		{
 			return buffer;
 		}
 
-		inline operator char*()
+		inline operator char*() noexcept
 		{
 			return reinterpret_cast<char*>(buffer);
 		}
 
-		inline operator const char*() const
+		inline operator const char*() const noexcept
 		{
 			return reinterpret_cast<const char*>(buffer);
 		}
 
-		inline operator void*()
+		inline operator void*() noexcept
 		{
 			return reinterpret_cast<void*>(buffer);
 		}
 
-		inline operator const void*() const
+		inline operator const void*() const noexcept
 		{
 			return reinterpret_cast<const void*>(buffer);
 		}
 
-		inline operator bool() const
+		inline operator bool() const noexcept
 		{
 			return buffer;
 		}
 
 	private:
 		byte* buffer;
-		size_t bufferSize;
+		size_t curBufferSize;
+		size_t maxBufferSize;
 	};
 }
