@@ -5,7 +5,7 @@
 namespace ServWork
 {
 	UserData::UserData()
-		: sock(nullptr),
+		: sock(0),
 		sender(new Sender()),
 		receiver(new Receiver()),
 		ip() {}
