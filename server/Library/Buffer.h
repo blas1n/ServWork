@@ -73,22 +73,6 @@ namespace ServWork
 			memset(*this, 0, maxBufferSize);
 		}
 
-		inline char* Get(size_t index)
-		{
-			if (index >= curBufferSize)
-				throw std::logic_error{ "Index out of bound." };
-
-			return static_cast<char*>(*this) + index;
-		}
-
-		inline const char* Get(size_t index) const
-		{
-			if (index >= curBufferSize)
-				throw std::logic_error{ "Index out of bound." };
-
-			return static_cast<const char*>(*this) + index;
-		}
-
 		void Set(size_t index, const char* content);
 		void Set(size_t index, const char* content, size_t size);
 
@@ -153,6 +137,10 @@ namespace ServWork
 		{
 			return buffer;
 		}
+
+	private:
+		char* Get(size_t index);
+		const char* Get(size_t index) const;
 
 	private:
 		byte* buffer;

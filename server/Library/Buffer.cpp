@@ -103,4 +103,20 @@ namespace ServWork
 
 		memcpy(Get(index), content, size);
 	}
+
+	char* Buffer::Get(size_t index)
+	{
+		if (index >= curBufferSize)
+			throw std::logic_error{ "Index out of bound." };
+
+		return static_cast<char*>(*this) + index;
+	}
+
+	const char* Buffer::Get(size_t index) const
+	{
+		if (index >= curBufferSize)
+			throw std::logic_error{ "Index out of bound." };
+
+		return static_cast<const char*>(*this) + index;
+	}
 }
