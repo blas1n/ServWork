@@ -11,5 +11,7 @@ namespace ServWork
 		queueSize = std::stoi(config.Get("QueueSize"));
 		checkKey = std::stoi(config.Get("CheckKey"));
 		maxUser = std::stoi(config.Get("MaxUser"));
+		acceptId = std::stoi(config.Get("AcceptId"));
+		notifyId = std::stoi(config.Get("NotifyId"));
 	}
 }
