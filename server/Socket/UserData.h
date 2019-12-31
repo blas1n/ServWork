@@ -13,6 +13,7 @@ namespace ServWork
 
 		inline const BaseSocket& GetSocket() const noexcept { return *sock; }
 		inline void SetSocket(const BaseSocket& inSock) noexcept { *sock = inSock; }
+		inline void SetSocket(BaseSocket&& inSock) noexcept { *sock = std::move(inSock); }
 
 		inline const Sender* GetSender() const noexcept { return sender; }
 		inline const Receiver* GetReceiver() const noexcept { return receiver; }
