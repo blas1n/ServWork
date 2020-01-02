@@ -1,33 +1,50 @@
 #pragma once
 
-#include "ReactableSocket.h"
+#include "EventSocket.h"
+#include <vector>
+#include "ClientSocket.h"
 
 namespace ServWork
 {
-	class ServerSocket final : public ReactableSocket
+	class ServerSocket final : public EventSocket
 	{
+		using Base = EventSocket;
+
 	public:
-		ServerSocket(class UserData* proto);
-		~ServerSocket() override;
+		ServerSocket();
+
+		ServerSocket(const ServerSocket&) = default;
+		ServerSocket(ServerSocket&&) = default;
+
+		ServerSocket& operator=(const ServerSocket&) = default;
+		ServerSocket& operator=(ServerSocket&&) = default;
+
+		~ServerSocket() override = default;
 
 		void Open() override;
-		void Close() override;
+		void Close() noexcept override;
 
-		int OnAccept(WPARAM wParam, LPARAM lParam);
-		void OnEvent(WPARAM wParam, LPARAM lParam);
+		void OnAccept() override;
 
-		int FindUserIndex(SockId sock);
-		UserData* FindUserData(SockId sock);
-
-		inline long GetDefaultEvent() const noexcept override
+		inline ClientSocket& FindClient(SockId sock)
 		{
-			return BaseSocket::GetDefaultEvent() | FD_ACCEPT;
+			return clients[FindClientIndex(sock)];
 		}
 
-		inline UserData** GetUsers() noexcept { return users; }
-		inline const UserData** GetUsers() const noexcept { return users; }
+		inline const ClientSocket& FindClient(SockId sock) const
+		{
+			return clients[FindClientIndex(sock)];
+		}
+		
+		size_t FindClientIndex(SockId sock) const;
+
+		inline long GetEvent() const noexcept override
+		{
+			return FD_ACCEPT;
+		}
 
 	private:
-		UserData** users;
+		std::vector<ClientSocket> clients;
+		size_t clientNum;
 	};
 }

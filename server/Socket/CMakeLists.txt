@@ -1,14 +1,19 @@
 set_project ()
 
 # Files
-set (SRC_BASE_SOCKET
-	BaseSocket.cpp
-	BaseSocket.h
+set (SRC_CLIENT_SOCKET
+	ClientSocket.cpp
+	ClientSocket.h
 )
 
-set (SRC_REACTABLE_SOCKET
-	ReactableSocket.cpp
-	ReactableSocket.h
+set (SRC_EVENT_MANAGER
+	EventManager.cpp
+	EventManager.h
+)
+
+set (SRC_EVENT_SOCKET
+	EventSocket.cpp
+	EventSocket.h
 )
 
 set (SRC_REACTOR
@@ -20,6 +25,11 @@ set (SRC_SERVER_SOCKET
 	ServerSocket.h
 )
 
+set (SRC_SOCKET
+	Socket.cpp
+	Socket.h
+)
+
 set (SRC_USER_DATA
 	UserData.cpp
 	UserData.h
@@ -27,10 +37,12 @@ set (SRC_USER_DATA
 
 # Target
 add_library (${PROJECT_ID} STATIC
-	${SRC_BASE_SOCKET}
-	${SRC_REACTABLE_SOCKET}
+	${SRC_CLIENT_SOCKET}
+	${SRC_EVENT_MANAGER}
+	${SRC_EVENT_SOCKET}
 	${SRC_REACTOR}
 	${SRC_SERVER_SOCKET}
+	${SRC_SOCKET}
 	${SRC_USER_DATA}
 )
 
@@ -38,8 +50,10 @@ add_library (${PROJECT_ID} STATIC
 set_public_dependencies (Config Exchanger)
 
 # Filters
-source_group ("Base Socket" FILES ${SRC_BASE_SOCKET})
-source_group ("Reactable Socket" FILES ${SRC_REACTABLE_SOCKET})
+source_group ("Client Socket" FILES ${SRC_CLIENT_SOCKET})
+source_group ("Event Manager" FILES ${SRC_EVENT_MANAGER})
+source_group ("Event Socket" FILES ${SRC_EVENT_SOCKET})
 source_group ("Reactor" FILES ${SRC_REACTOR})
 source_group ("Server Socket" FILES ${SRC_SERVER_SOCKET})
+source_group ("Socket" FILES ${SRC_SOCKET})
 source_group ("User Data" FILES ${SRC_USER_DATA})
