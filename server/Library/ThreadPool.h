@@ -17,11 +17,8 @@ namespace ServWork
 		using TaskRetType = std::enable_if_t<!std::is_void_v<RetType>, RetType>;
 
 	public:
-		static inline ThreadPool& Get() noexcept
-		{
-			static ThreadPool instance;
-			return instance;
-		}
+		ThreadPool();
+		~ThreadPool();
 
 		template <class Fn, class... Args>
 		std::future<TaskRetType<std::invoke_result_t<Fn, Args...>>>
@@ -53,12 +50,11 @@ namespace ServWork
 		}
 
 	private:
-		ThreadPool();
-		~ThreadPool();
-
 		void ThreadWork() noexcept;
 
 	private:
+		inline static bool isCreated = false;
+
 		std::vector<std::thread> threads;
 		std::queue<std::function<void()>> tasks;
 		std::condition_variable cv;

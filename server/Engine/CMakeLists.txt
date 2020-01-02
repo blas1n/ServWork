@@ -2,8 +2,8 @@ set_project ()
 
 # Files
 set (SRC
-	TCP.cpp
-	TCP.h
+	Engine.cpp
+	Engine.h
 )
 
 # Target
@@ -12,7 +12,7 @@ add_library (${PROJECT_ID} STATIC
 )
 
 # Dependencies
-set_public_dependencies (base_library)
+set_public_dependencies (Socket)
 
 # Filters
 source_group ("" FILES ${SRC})
