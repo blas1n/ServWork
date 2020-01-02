@@ -1,24 +1,18 @@
 #pragma once
 
-#include "UserData.h"
-#include <vector>
+#include "Core.h"
 
 namespace ServWork
 {
 	class Engine final
 	{
 	public:
-		Engine(class Reactor* reactor, const UserData& data = UserData{ });
+		Engine(class Reactor* reactor);
 		~Engine();
 
 		int Run();
 
-		void RegisterSocket(const class Socket& socket);
-		void UnregisterSocket(const class Socket& socket);
-		
 	private:
 		class ServerSocket* sock;
-
-		std::vector<SockId> sockIds;
 	};
 }

@@ -1,14 +1,16 @@
 #include "Engine.h"
-#include "Config.h"
-#include "ServerSocket.h"
+#include <functional>
 #include <iostream>
+#include <map>
 #include <Windows.h>
+#include "Config.h"
+#include "EventManager.h"
+#include "ServerSocket.h"
 
 namespace ServWork
 {
-	Engine::Engine(Reactor* reactor, const UserData& data/*= UserData{ }*/)
-		: sock{ new ServerSocket{ data } },
-		sockIds(Config::maxUser)
+	Engine::Engine(Reactor* reactor)
+		: sock{ new ServerSocket }
 	{
 		WSADATA wsa;
 		WSAStartup(MAKEWORD(2, 2), &wsa);
@@ -21,7 +23,7 @@ namespace ServWork
 		}
 		catch (std::exception& e)
 		{
-			std::cout << "Cannot start ServWork : " << e.what() << std::endl;
+			std::cout << Name{ "cannot_start" }.Get() << e.what() << std::endl;
 		}
 	}
 
@@ -34,17 +36,27 @@ namespace ServWork
 
 	int Engine::Run()
 	{
+		std::map<long, void(EventSocket::*)()> func
+		{
+			std::make_pair(FD_ACCEPT, &EventSocket::OnAccept),
+			std::make_pair(FD_READ, &EventSocket::OnReceive),
+			std::make_pair(FD_CLOSE, &EventSocket::OnClose)
+		};
 
-	}
+		while (true)
+		{
+			const auto [index, event] = EventManager::Get().GetNetworkEvent();
+			
+			EventSocket& socket = *sock;
+			if (index > 0)
+			{
+				const auto id = EventManager::Get().GetId(index);
+				socket = sock->FindClient(id);
+			}
 
-	void Engine::RegisterSocket(const Socket& socket)
-	{
-		sockIds.push_back(socket.GetId());
-	}
+			func[event](socket);
+		}
 
-	void Engine::UnregisterSocket(const Socket& socket)
-	{
-		auto iter = std::find(sockIds.cbegin(), sockIds.cend(), socket.GetId());
-		sockIds.erase(iter);
+		return 0;
 	}
 }
