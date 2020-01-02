@@ -1,14 +1,11 @@
 #include "UserData.h"
-#include "Receiver.h"
-#include "Sender.h"
 
 namespace ServWork
 {
 	UserData::UserData()
-		: sock(0),
+		: ip(),
 		sender(new Sender()),
-		receiver(new Receiver()),
-		ip() {}
+		receiver(new Receiver()) {}
 
 	UserData::~UserData()
 	{
