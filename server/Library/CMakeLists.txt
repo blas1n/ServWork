@@ -25,6 +25,7 @@ set (SRC_THREAD_POOL
 
 set (SRC
 	Core.h
+	Type.h
 )
 
 # Target

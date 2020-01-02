@@ -3,6 +3,7 @@
 #include "Core.h"
 #include <cstring>
 #include <vector>
+#include "StringTranslator.h"
 
 namespace ServWork
 {
@@ -83,19 +84,6 @@ namespace ServWork
 			vec.clear();
 		}
 
-		void Set(size_t index, const char* content)
-		{
-			Set(index, content, strnlen(content, GetMaxSize() - index));
-		}
-
-		inline void Set(size_t index, const char* content, size_t size)
-		{
-			if (index < 0)
-				index = GetCurSize() + index;
-
-			std::copy_n(content, size, vec.begin() + index);
-		}
-
 		inline byte* Get(size_t index = 0) noexcept
 		{
 			return vec.data() + index;
@@ -106,15 +94,40 @@ namespace ServWork
 			return vec.data() + index;
 		}
 
+		inline void Set(size_t index, const char* content)
+		{
+			Set(index, reinterpret_cast<const byte*>(content),
+				strnlen(content, GetMaxSize() - index));
+		}
+
+		inline void Set(size_t index, const char* content, size_t size)
+		{
+			Set(index, reinterpret_cast<const byte*>(content), size);
+		}
+
+		inline void Set(size_t index, const char_t* content)
+		{
+			Set(index, reinterpret_cast<const byte*>(content),
+				wcsnlen(content, GetMaxSize() - index));
+		}
+
+		inline void Set(size_t index, const char_t* content, size_t size)
+		{
+			Set(index, reinterpret_cast<const byte*>(content), size);
+		}
+
+		void Set(size_t index, const byte* content, size_t size)
+		{
+			if (index < 0)
+				index = GetCurSize() + index;
+
+			std::copy_n(content, size, vec.begin() + index);
+		}
+
 		template <size_t N>
 		inline void Set(size_t index, const byte(&content)[N])
 		{
-			Set(index, reinterpret_cast<const char*>(content), N);
-		}
-
-		inline void Set(size_t index, const byte* content, size_t size)
-		{
-			Set(index, reinterpret_cast<const char*>(content), size);
+			Set(index, content, N);
 		}
 
 		template <class T>
@@ -141,6 +154,16 @@ namespace ServWork
 		inline operator const byte*() const noexcept
 		{
 			return Get();
+		}
+
+		inline operator char_t*() noexcept
+		{
+			return reinterpret_cast<char_t*>(Get());
+		}
+
+		inline operator const char_t*() const noexcept
+		{
+			return reinterpret_cast<const char_t*>(Get());
 		}
 
 		inline operator char*() noexcept

@@ -27,7 +27,7 @@ namespace ServWork
 	double Exchanger::GetPercent() const
 	{
 		if (maxSize == 0)
-			throw Warning{ "max_size_is_0" };
+			throw MakeWarning("max_size_is_0");
 
 		return static_cast<double>(curSize) / maxSize;
 	}

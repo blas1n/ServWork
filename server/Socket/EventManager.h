@@ -12,7 +12,11 @@ namespace ServWork
 		EventManager(const EventManager&) = delete;
 		EventManager(EventManager&&) = delete;
 
-		static EventManager& Get();
+		static inline EventManager& Get()
+		{
+			static EventManager instance;
+			return instance;
+		}
 		
 		void RegisterEvent(const class EventSocket& socket, long event);
 		void UnregisterEvent(const EventSocket& socket);

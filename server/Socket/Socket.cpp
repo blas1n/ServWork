@@ -30,10 +30,10 @@ namespace ServWork
 		s = INVALID_SOCKET;
 	}
 
-	bool Socket::Send(byte id, Buffer& buf) const
+	void Socket::Send(byte id, Buffer& buf) const
 	{
 		if (s == INVALID_SOCKET)
-			throw Warning{ Name{ "socket_not_open" } };
+			throw MakeWarning("socket_not_open");
 
 		buf >>= HEADER_SIZE;
 		
@@ -41,15 +41,16 @@ namespace ServWork
 		const Header header{ Config::checkKey, id, size };
 		buf.Set(0, header);
 
-		return send(s, buf, size, 0) == size;
+		if (send(s, buf, size, 0) != size)
+			throw MakeWarning("send_failed");
 	}
 
-	bool Socket::Recv(Buffer& buf, size_t size) const
+	void Socket::Recv(Buffer& buf, size_t size) const
 	{
 		using namespace std::chrono_literals;
 		
 		if (s == INVALID_SOCKET)
-			throw Warning{ Name{ "socket_not_open" } };
+			throw MakeWarning("socket_not_open");
 
 		auto tmp = new char[size];
 		size_t totalSize = 0;
@@ -62,7 +63,8 @@ namespace ServWork
 
 			if (readSize == SOCKET_ERROR)
 			{
-				if (++retry > 10) return false;
+				if (++retry > 10)
+					throw MakeWarning("recv_failed");
 				std::this_thread::sleep_for(50ms);
 			}
 			else
@@ -73,7 +75,5 @@ namespace ServWork
 					std::this_thread::sleep_for(5ms);
 			}
 		}
-		
-		return true;
 	}	
 }

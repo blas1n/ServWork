@@ -9,15 +9,15 @@ namespace ServWork
 		: threads(), tasks(), cv(), taskMutex(), isEnd(false)
 	{
 		if (isCreated)
-			throw Error{ Name{ "thread_pool_is_already_created" } };
+			throw MakeError("thread_pool_is_already_created");
 
 		isCreated = true;
 
 		auto threadNum = std::thread::hardware_concurrency();
 		if (threadNum == 0)
-			throw std::runtime_error{ "Hardware Concurrency is 0" };
+			throw MakeError("hardware_concurrency_is_0");
 
-		threads.reserve(threadNum);
+		threads.reserve(threadNum * 2 + 1);
 
 		while (threadNum--)
 			threads.emplace_back([this]() { ThreadWork(); });

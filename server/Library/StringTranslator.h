@@ -1,22 +1,16 @@
 #pragma once
 
-#include <cstring>
+#include <string>
 
 struct StringTranslator
 {
-	static void AsciiToUnicode(char* in, wchar_t* out)
+	static inline std::wstring AsciiToUnicode(const std::string& in)
 	{
-		auto len = strlen(in) + 1;
-		memset(out, 0, len * 2);
-
-		for (int i = 0; i < len; ++i)
-			out[i] = in[i];
+		return std::wstring(in.begin(), in.end());
 	}
 
-	static void UnicodeToAscii(wchar_t* in, char* out)
+	static inline std::string UnicodeToAscii(const std::wstring& in)
 	{
-		auto len = wcslen(in) + 1;
-		for (int i = 0; i < len; ++i)
-			out[i] = static_cast<char>(in[i]);
+		return std::string(in.begin(), in.end());
 	}
 };

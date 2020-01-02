@@ -18,6 +18,6 @@ namespace ServWork
 		static int32 notifyId;
 
 	private:
-		constexpr static char* PATH = "Config.ini";
+		constexpr static char_t PATH[] = STR("Config.ini");
 	};
 }

@@ -21,8 +21,8 @@ namespace ServWork
 		virtual void Open() {}
 		virtual void Close() noexcept;
 
-		bool Send(byte id, Buffer& buf) const;
-		bool Recv(Buffer& buf, size_t size) const;
+		void Send(byte id, Buffer& buf) const;
+		void Recv(Buffer& buf, size_t size) const;
 
 		inline SockId GetId() const noexcept { return s; }
 

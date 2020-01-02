@@ -3,7 +3,7 @@
 
 namespace ServWork
 {
-	std::string Name::Get() const
+	String Name::Get() const
 	{
 		return StringMapper::Get(id);
 	}

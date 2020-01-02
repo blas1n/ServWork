@@ -1,33 +1,23 @@
 #pragma once
 
-#pragma warning(disable:4996)
-
-#include <cstddef>
 #include "Exception.h"
 #include "Name.h"
+#include "StringTranslator.h"
+#include "Type.h"
 
 namespace ServWork
 {
-	using byte = unsigned char;
-
-	using uint8 = unsigned char;
-	using uint16 = unsigned short;
-	using uint32 = unsigned int;
-	using uint64 = unsigned long long;
-
-	using int8 = signed char;
-	using int16 = signed short;
-	using int32 = signed int;
-	using int64 = signed long long;
-	
-#pragma pack(push, 1)
-	extern "C" struct Header
+	Warning MakeWarning(const char* msg)
 	{
-		uint8 check;
-		uint8 id;
-		uint32 size;
-	};
-#pragma pack(pop)
+		std::string str(msg);
+		auto wStr = StringTranslator::AsciiToUnicode(str);
+		return Warning{ Name{ wStr } };
+	}
 
-	constexpr auto HEADER_SIZE = sizeof(Header);
+	Error MakeError(const char* msg)
+	{
+		std::string str(msg);
+		auto wStr = StringTranslator::AsciiToUnicode(str);
+		return Error{ Name{ wStr } };
+	}
 }

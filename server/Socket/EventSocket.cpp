@@ -55,15 +55,7 @@ namespace ServWork
 		recv(s, reinterpret_cast<char*>(&size), sizeof(uint32), 0);
 
 		Buffer buf{ size };
-
-		if (size > 0)
-		{
-			if (!Recv(buf, size))
-			{
-				Close();
-				return;
-			}
-		}
+		if (size > 0) Recv(buf, size);
 
 		reactor->OnReceive(*this, id, std::move(buf));
 		EventManager::Get().ChangeEvent(*this, GetEvent());

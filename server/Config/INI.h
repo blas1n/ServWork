@@ -2,14 +2,13 @@
 
 #include "Core.h"
 #include <map>
-#include <string>
 
 namespace ServWork
 {
 	class INI final
 	{
 	public:
-		INI(const std::string& inPath);
+		INI(const String& inPath);
 
 		INI(const INI& other) = default;
 		INI(INI&& other) = default;
@@ -19,25 +18,23 @@ namespace ServWork
 
 		~INI() = default;
 
-		inline const std::string& Get(const std::string& key) const
-		{
-			return (*map.find(key)).second;
-		}
+		const String& Get(const String& key) const;
+		const String* GetChecked(const String& key) const noexcept;
 
-		void Set(const std::string& key, const std::string& value);
+		void Set(const String& key, const String& value);
 
-		inline const std::map<std::string, std::string>& GetAll() const noexcept
+		inline const std::map<String, String>& GetAll() const noexcept
 		{
 			return map;
 		}
 
-		inline const std::string& GetPath() const noexcept
+		inline const String& GetPath() const noexcept
 		{
 			return path;
 		}
 
 	private:
-		std::map<std::string, std::string> map;
-		std::string path;
+		std::map<String, String> map;
+		String path;
 	};
 }

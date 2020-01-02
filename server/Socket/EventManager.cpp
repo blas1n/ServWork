@@ -15,12 +15,6 @@ namespace ServWork
 		}
 	}
 
-	EventManager& EventManager::Get()
-	{
-		static EventManager instance;
-		return instance;
-	}
-
 	void EventManager::RegisterEvent(const EventSocket& socket, long event)
 	{
 		const auto id = socket.GetId();

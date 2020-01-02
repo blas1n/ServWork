@@ -12,23 +12,24 @@ namespace ServWork
 	Engine::Engine(Reactor* reactor)
 		: sock{ new ServerSocket }
 	{
+		std::locale::global(std::locale(""));
+
 		WSADATA wsa;
 		if (!WSAStartup(MAKEWORD(2, 2), &wsa))
 		{
-			std::cout << Name{ "cannot_start_up_wsa" }.Get() << std::endl;
+			std::wcout << Name{ STR("cannot_start_up_wsa") }.Get() << std::endl;
 			exit(3);
 		}
 
 		try
 		{
-			setlocale(LC_ALL, "");
 			Config::Init();
 			sock->SetReactor(reactor);
 			sock->Open();
 		}
-		catch (std::exception& e)
+		catch (Exception& e)
 		{
-			std::cout << Name{ "cannot_start" }.Get() << e.what() << std::endl;
+			std::wcout << Name{ STR("cannot_start") }.Get() << e.What() << std::endl;
 			exit(2);
 		}
 	}
@@ -68,12 +69,12 @@ namespace ServWork
 			}
 			catch (Warning& e)
 			{
-				std::cout << e.what() << std::endl;
+				std::wcout << e.What() << std::endl;
 				continue;
 			}
 			catch (Error& e)
 			{
-				std::cout << e.what() << std::endl;
+				std::wcout << e.What() << std::endl;
 				exit(1);
 			}
 		}

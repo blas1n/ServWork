@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include "Type.h"
 #include <utility>
 
 namespace ServWork
@@ -10,28 +10,28 @@ namespace ServWork
 	public:
 		Name() noexcept : id() {}
 
-		Name(const std::string& inId) : id(inId) {}
-		Name(std::string&& inId) : id(std::move(inId)) {}
+		Name(const String& inId) : id(inId) {}
+		Name(String&& inId) : id(std::move(inId)) {}
 
 		Name(const Name&) = default;
 		Name(Name&&) = default;
 
-		Name& operator=(const std::string& inId) { id = inId; }
-		Name& operator=(std::string&& inId) { id = std::move(inId); }
+		Name& operator=(const String& inId) { id = inId; }
+		Name& operator=(String&& inId) { id = std::move(inId); }
 
 		Name& operator=(const Name&) = default;
 		Name& operator=(Name&&) = default;
 
 		~Name() = default;
 
-		inline operator std::string() const
+		inline operator String() const
 		{
 			return Get();
 		}
 
-		std::string Get() const;
+		String Get() const;
 
 	private:
-		std::string id;
+		String id;
 	};
 }

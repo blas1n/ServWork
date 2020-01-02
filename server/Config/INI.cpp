@@ -3,37 +3,54 @@
 
 namespace ServWork
 {
-	INI::INI(const std::string& inPath)
+	INI::INI(const String& inPath)
 		: map(), path(inPath)
 	{
-		std::ifstream in{ path };
+		std::wifstream in{ path };
 		if (!in.is_open())
-			throw Error{ Name{ "cannot_open_config_file" } };
+			throw MakeError("cannot_open_config_file");
 
-		char tmp[128];
-		std::string buf;
+		char_t tmp[128];
+		String buf;
 
 		while (in)
 		{
 			in.getline(tmp, 128);
 			buf = tmp;
 
-			auto idx = buf.find('=');
+			auto idx = buf.find(STR('='));
 			map.insert(std::make_pair(buf.substr(0, idx), buf.substr(idx + 1)));
 		}
 
 		in.close();
 	}
+	
+	const String& INI::Get(const String& key) const
+	{
+		auto iter = map.find(key);
 
-	void INI::Set(const std::string& key, const std::string& value)
+		if (iter == map.cend())
+			throw MakeWarning("cannot_find_key");
+
+		return iter->second;
+	}
+
+	const String* INI::GetChecked(const String& key) const noexcept
+	{
+		auto iter = map.find(key);
+
+		return (iter != map.cend()) ? &(iter->second) : nullptr;
+	}
+
+	void INI::Set(const String& key, const String& value)
 	{
 		map[key] = value;
 
-		std::ofstream out{ path };
+		std::wofstream out{ path };
 		if (!out.is_open())
-			throw Error{ Name{ "cannot_open_config_file" } };
+			throw MakeError("cannot_open_config_file");
 
 		for (const auto& pair : map)
-			out << pair.first << "=" << pair.second << std::endl;
+			out << pair.first << STR("=") << pair.second << std::endl;
 	}
 }

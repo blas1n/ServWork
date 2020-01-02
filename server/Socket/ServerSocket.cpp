@@ -20,7 +20,7 @@ namespace ServWork
 		{
 			throw Error
 			{
-				Name{ "socket_error" }.Get() + strerror(errno)
+				Name{ STR("socket_error") }.Get() + _wcserror(errno)
 			};
 		}
 
@@ -35,7 +35,7 @@ namespace ServWork
 		{
 			throw Error
 			{
-				Name{ "bind_error" }.Get() + strerror(errno)
+				Name{ STR("bind_error") }.Get() + _wcserror(errno)
 			};
 		}
 
@@ -44,7 +44,7 @@ namespace ServWork
 		{
 			throw Error
 			{
-				Name{ "listen_error" }.Get() + strerror(errno)
+				Name{ STR("listen_error") }.Get() + _wcserror(errno)
 			};
 		}
 
@@ -71,21 +71,20 @@ namespace ServWork
 		auto newSocket = accept(s, reinterpret_cast<Addr*>(&addr), &len);
 
 		if (newSocket == INVALID_SOCKET)
-			throw Warning{ Name{ "accepted_socket_is_invalid" } };
+			throw MakeWarning("accepted_socket_is_invalid");
 
-		wchar_t ip[16];
-		StringTranslator::AsciiToUnicode(inet_ntoa(addr.sin_addr), ip);
+		auto ip = StringTranslator::AsciiToUnicode(inet_ntoa(addr.sin_addr));
 
 		if (EventManager::Get().GetSize() == Config::maxUser)
 		{
-			reactor->OnLimitError(ip);
+			reactor->OnLimitError(ip.c_str());
 			closesocket(newSocket);
-			throw Warning{ Name{ "client_is_full" } };
+			throw MakeWarning("client_is_full");
 		}
 
 		auto client = clients[clientNum++];
 		client.Open();
-		client.GetData().SetIp(ip);
+		client.GetData().SetIp(ip.c_str());
 	}
 
 	size_t ServerSocket::FindClientIndex(SockId sock) const
@@ -96,7 +95,7 @@ namespace ServWork
 			});
 
 		if (iter == clients.end())
-			throw Warning{ Name{ "the_client_does_not_exist" } };
+			throw MakeWarning("the_client_does_not_exist");
 		
 		return iter - clients.cbegin();
 	}

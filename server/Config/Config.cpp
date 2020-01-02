@@ -5,13 +5,14 @@ namespace ServWork
 {
 	void Config::Init()
 	{
-		static INI config{ PATH };
+		static char_t ABS_PATH[ArrSize(ROOT_PATH) + ArrSize(PATH)];
+		static INI config{ wcscat(wcscat(ABS_PATH, ROOT_PATH), PATH) };
 
-		port = std::stoi(config.Get("Port"));
-		queueSize = std::stoi(config.Get("QueueSize"));
-		checkKey = std::stoi(config.Get("CheckKey"));
-		maxUser = std::stoi(config.Get("MaxUser"));
-		acceptId = std::stoi(config.Get("AcceptId"));
-		notifyId = std::stoi(config.Get("NotifyId"));
+		port =		std::stoi(config.Get(STR("Port")));
+		queueSize = std::stoi(config.Get(STR("QueueSize")));
+		checkKey =	std::stoi(config.Get(STR("CheckKey")));
+		maxUser =	std::stoi(config.Get(STR("MaxUser")));
+		acceptId =	std::stoi(config.Get(STR("AcceptId")));
+		notifyId =	std::stoi(config.Get(STR("NotifyId")));
 	}
 }

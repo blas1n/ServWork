@@ -23,4 +23,6 @@ endif ()
 
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
+add_definitions (-DROOT_DIR="${CMAKE_SOURCE_DIR}/")
+add_definitions (-DCUR_DIR="${CMAKE_CURRENT_LIST_DIR}/")
 add_subdirectory (server)
