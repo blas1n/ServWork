@@ -2,7 +2,7 @@
 
 #include "Core.h"
 #include <cstring>
-#include <stdexcept>
+#include <vector>
 
 namespace ServWork
 {
@@ -12,15 +12,15 @@ namespace ServWork
 		Buffer() = default;
 		Buffer(std::nullptr_t) : Buffer() {}
 
-		Buffer(size_t bufferSize);
+		Buffer(size_t size) : vec(size) {};
 
-		Buffer(const Buffer& other);
-		Buffer(Buffer&& other) noexcept;
+		Buffer(const Buffer& other) = default;
+		Buffer(Buffer&& other) noexcept = default;
 
-		Buffer& operator=(const Buffer& other);
-		Buffer& operator=(Buffer&& other) noexcept;
+		Buffer& operator=(const Buffer& other) = default;
+		Buffer& operator=(Buffer&& other) noexcept = default;
 
-		~Buffer();
+		~Buffer() = default;
 
 		Buffer& operator=(const char* content)
 		{
@@ -36,45 +36,73 @@ namespace ServWork
 			return *this;
 		}
 
-		byte operator[](size_t index) const
+		inline byte operator[](size_t index) const
 		{
-			if (index >= curBufferSize)
-				throw std::logic_error{ "Index out of bound." };
-
-			return buffer[index];
+			return vec[index];
 		}
 
 		inline Buffer& operator+=(const char* content)
 		{
-			Set(curBufferSize, content);
+			const auto len = strnlen(content, GetMaxSize());
+			vec.insert(vec.cend(), content, content + len);
 			return *this;
 		}
 
 		template <size_t N>
 		inline Buffer& operator+=(const byte(&content)[N])
 		{
-			Set(curBufferSize, content);
+			vec.insert(vec.cend(), content, content + N);
 			return *this;
 		}
 
 		template <class T>
 		inline Buffer& operator+=(const T& value)
 		{
-			Set(curBufferSize, value);
-			return *this
+			return operator+=<sizeof(T)>(reinterpret_cast<const byte*>(&value));
 		}
 
-		Buffer& operator<<=(size_t index) noexcept;
-		Buffer& operator>>=(size_t index) noexcept;
+		inline Buffer& operator<<=(size_t index) noexcept
+		{
+			std::rotate(vec.begin(), vec.begin() + index, vec.end());
+		}
+
+		inline Buffer& operator>>=(size_t index) noexcept
+		{
+			std::rotate(vec.rbegin(), vec.rbegin() + index, vec.rend());
+		}
+
+		inline void Reserve(size_t size)
+		{
+			vec.reserve(size);
+		}
 
 		inline void Init() noexcept
 		{
-			curBufferSize = 0;
-			memset(*this, 0, maxBufferSize);
+			vec.clear();
 		}
 
-		void Set(size_t index, const char* content);
-		void Set(size_t index, const char* content, size_t size);
+		void Set(size_t index, const char* content)
+		{
+			Set(index, content, strnlen(content, GetMaxSize() - index));
+		}
+
+		inline void Set(size_t index, const char* content, size_t size)
+		{
+			if (index < 0)
+				index = GetCurSize() + index;
+
+			std::copy_n(content, size, vec.cbegin() + index);
+		}
+
+		inline byte* Get(size_t index = 0) noexcept
+		{
+			return vec.data() + index;
+		}
+
+		inline const byte* Get(size_t index = 0) const noexcept
+		{
+			return vec.data() + index;
+		}
 
 		template <size_t N>
 		inline void Set(size_t index, const byte(&content)[N])
@@ -93,58 +121,52 @@ namespace ServWork
 			Set(index, reinterpret_cast<const byte*>(&value), sizeof(T));
 		}
 
-		inline size_t GetCurBufferSize() const noexcept
+		inline size_t GetCurSize() const noexcept
 		{
-			return curBufferSize;
+			return vec.size();
 		}
 
-		inline size_t GetMaxBufferSize() const noexcept
+		inline size_t GetMaxSize() const noexcept
 		{
-			return maxBufferSize;
+			return vec.capacity();
 		}
 
 		inline operator byte*() noexcept
 		{
-			return buffer;
+			return Get();
 		}
 
 		inline operator const byte*() const noexcept
 		{
-			return buffer;
+			return Get();
 		}
 
 		inline operator char*() noexcept
 		{
-			return reinterpret_cast<char*>(buffer);
+			return reinterpret_cast<char*>(Get());
 		}
 
 		inline operator const char*() const noexcept
 		{
-			return reinterpret_cast<const char*>(buffer);
+			return reinterpret_cast<const char*>(Get());
 		}
 
 		inline operator void*() noexcept
 		{
-			return reinterpret_cast<void*>(buffer);
+			return reinterpret_cast<void*>(Get());
 		}
 
 		inline operator const void*() const noexcept
 		{
-			return reinterpret_cast<const void*>(buffer);
+			return reinterpret_cast<const void*>(Get());
 		}
 
 		inline operator bool() const noexcept
 		{
-			return buffer;
+			return Get();
 		}
 
 	private:
-		char* Get(size_t index);
-		const char* Get(size_t index) const;
-
-	private:
-		byte* buffer;
-		size_t curBufferSize;
-		size_t maxBufferSize;
+		std::vector<byte> vec;
 	};
 }
