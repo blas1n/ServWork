@@ -1,5 +1,4 @@
 #include "INI.h"
-#include <exception>
 #include <fstream>
 
 namespace ServWork
@@ -8,7 +7,8 @@ namespace ServWork
 		: map(), path(inPath)
 	{
 		std::ifstream in{ path };
-		if (!in.is_open()) throw std::runtime_error{ "Cannot open config file" };
+		if (!in.is_open())
+			throw Error{ Name{ "cannot_open_config_file" } };
 
 		char tmp[128];
 		std::string buf;
@@ -31,7 +31,7 @@ namespace ServWork
 
 		std::ofstream out{ path };
 		if (!out.is_open())
-			throw std::runtime_error{ "Cannot open config file" };
+			throw Error{ Name{ "cannot_open_config_file" } };
 
 		for (const auto& pair : map)
 			out << pair.first << "=" << pair.second << std::endl;

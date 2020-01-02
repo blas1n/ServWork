@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core.h"
+
 namespace ServWork
 {
 	class Exchanger

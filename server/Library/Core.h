@@ -1,13 +1,11 @@
 #pragma once
 
 #include <cstddef>
-#include <stdexcept>
+#include "Exception.h"
+#include "Name.h"
 
 namespace ServWork
 {
-	using LogicError = std::logic_error;
-	using RuntimeError = std::runtime_error;
-
 	using byte = unsigned char;
 
 	using uint8 = unsigned char;

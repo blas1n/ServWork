@@ -1,5 +1,4 @@
 #include "Exchanger.h"
-#include <stdexcept>
 
 namespace ServWork
 {
@@ -28,7 +27,7 @@ namespace ServWork
 	double Exchanger::GetPercent() const
 	{
 		if (maxSize == 0)
-			throw std::logic_error{ "Max size is 0" };
+			throw Warning{ "max_size_is_0" };
 
 		return curSize / maxSize;
 	}
