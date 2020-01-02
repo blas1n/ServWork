@@ -54,7 +54,9 @@ namespace ServWork
 				socket = sock->FindClient(id);
 			}
 
-			func[event](socket);
+			try { func[event](socket); }
+			catch (Warning& e) { continue; }
+			catch (Error& e) { return 1; }
 		}
 
 		return 0;
