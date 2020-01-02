@@ -34,32 +34,32 @@ namespace ServWork
 		friend bool operator==(const Socket& lhs, SockId rhs);
 	};
 
-	bool operator==(const Socket& lhs, const Socket& rhs)
+	inline bool operator==(const Socket& lhs, const Socket& rhs)
 	{
 		return lhs.s == rhs.s;
 	}
 
-	bool operator!=(const Socket& lhs, const Socket& rhs)
+	inline bool operator!=(const Socket& lhs, const Socket& rhs)
 	{
 		return !(lhs == rhs);
 	}
 
-	bool operator==(const Socket& lhs, SockId rhs)
+	inline bool operator==(const Socket& lhs, SockId rhs)
 	{
 		return lhs.s == rhs;
 	}
 
-	bool operator!=(const Socket& lhs, SockId rhs)
+	inline bool operator!=(const Socket& lhs, SockId rhs)
 	{
 		return !(lhs == rhs);
 	}
 
-	bool operator==(SockId lhs, const Socket& rhs)
+	inline bool operator==(SockId lhs, const Socket& rhs)
 	{
 		return rhs == lhs;
 	}
 
-	bool operator!=(SockId lhs, const Socket& rhs)
+	inline bool operator!=(SockId lhs, const Socket& rhs)
 	{
 		return !(lhs == rhs);
 	}
