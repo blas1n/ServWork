@@ -4,9 +4,7 @@
 #include <algorithm>
 #include "Config.h"
 #include "EventManager.h"
-#include "Name.h"
 #include "Reactor.h"
-#include "StringTranslator.h"
 
 namespace ServWork
 {

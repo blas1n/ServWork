@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Core.h"
-#include <string>
 #include <WinSock2.h>
 #include "Buffer.h"
 

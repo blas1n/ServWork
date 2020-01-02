@@ -7,17 +7,13 @@
 
 namespace ServWork
 {
-	Warning MakeWarning(const char* msg)
+	inline Warning MakeWarning(const char* msg) noexcept
 	{
-		std::string str(msg);
-		auto wStr = StringTranslator::AsciiToUnicode(str);
-		return Warning{ Name{ wStr } };
+		return Warning{ Name{ StringTranslator::AsciiToUnicode(msg) } };
 	}
 
-	Error MakeError(const char* msg)
+	inline Error MakeError(const char* msg) noexcept
 	{
-		std::string str(msg);
-		auto wStr = StringTranslator::AsciiToUnicode(str);
-		return Error{ Name{ wStr } };
+		return Error{ Name{ StringTranslator::AsciiToUnicode(msg) } };
 	}
 }

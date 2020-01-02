@@ -2,7 +2,6 @@
 #include <chrono>
 #include <thread>
 #include "Config.h"
-#include "Name.h"
 
 namespace ServWork
 {

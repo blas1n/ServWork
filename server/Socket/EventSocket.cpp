@@ -1,7 +1,6 @@
 #include "EventSocket.h"
 #include "Config.h"
 #include "EventManager.h"
-#include "Name.h"
 #include "Reactor.h"
 
 namespace ServWork
