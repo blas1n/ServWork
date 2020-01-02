@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
 
-project (Serv_Work VERSION 1.1.1 LANGUAGES CXX)
+project (Serv_Work VERSION 2.0.0 LANGUAGES CXX)
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include (platform)
