@@ -24,7 +24,12 @@ namespace ServWork
 
 		~Name() = default;
 
-		operator std::string() const;
+		inline operator std::string() const
+		{
+			return Get();
+		}
+
+		std::string Get() const;
 
 	private:
 		std::string id;
