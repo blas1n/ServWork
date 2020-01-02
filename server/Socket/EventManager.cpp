@@ -36,7 +36,7 @@ namespace ServWork
 		WSAEventSelect(*idIter, *eventIter, event);
 	}
 
-	decltype(auto) EventManager::GetNetworkEvent()
+	decltype(auto) EventManager::GetNetworkEvent() noexcept
 	{
 		const auto index = WSAWaitForMultipleEvents(ids.size(), events.data(), false, INFINITE, false);
 		WSANETWORKEVENTS event;

@@ -17,7 +17,7 @@ namespace ServWork
 		void UnregisterEvent(const class EventSocket& socket);
 		void ChangeEvent(const class EventSocket& socket, long event);
 		
-		decltype(auto) GetNetworkEvent();
+		decltype(auto) GetNetworkEvent() noexcept;
 
 		inline SockId GetId(size_t index) const noexcept { return ids[index]; }
 
