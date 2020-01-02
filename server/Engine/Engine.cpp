@@ -5,6 +5,7 @@
 #include "Config.h"
 #include "EventManager.h"
 #include "ServerSocket.h"
+#include "ThreadPool.h"
 
 namespace ServWork
 {
@@ -48,6 +49,8 @@ namespace ServWork
 			std::make_pair(FD_CLOSE, &EventSocket::OnClose)
 		};
 
+		ThreadPool threadPool;
+
 		while (true)
 		{
 			const auto [index, event] = EventManager::Get().GetNetworkEvent();
@@ -61,7 +64,7 @@ namespace ServWork
 			
 			try
 			{
-				func[event](socket);
+				threadPool.AddTask(func[event], socket);
 			}
 			catch (Warning& e)
 			{

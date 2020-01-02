@@ -19,7 +19,6 @@ set (SRC_STRING_TRANSLATOR
 )
 
 set (SRC_THREAD_POOL
-	ThreadAccesser.h
 	ThreadPool.cpp
 	ThreadPool.h
 )

@@ -2,7 +2,6 @@
 #include <utility>
 #include "Core.h"
 #include "Name.h"
-#include "ThreadAccesser.h"
 
 namespace ServWork
 {
@@ -12,7 +11,6 @@ namespace ServWork
 		if (isCreated)
 			throw Error{ Name{ "thread_pool_is_already_created" } };
 
-		ThreadAccesser::threadPool = this;
 		isCreated = true;
 
 		auto threadNum = std::thread::hardware_concurrency();
@@ -32,6 +30,8 @@ namespace ServWork
 
 		for (auto& t : threads)
 			t.join();
+
+		isCreated = false;
 	}
 
 	void ThreadPool::ThreadWork() noexcept

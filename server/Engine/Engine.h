@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Core.h"
-#include "ThreadAccesser.h"
 
 namespace ServWork
 {
-	class Engine final : private ThreadAccesser
+	class Engine final
 	{
 	public:
 		Engine(class Reactor* reactor);
