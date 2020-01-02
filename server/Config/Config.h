@@ -14,9 +14,6 @@ namespace ServWork
 		static uint8 checkKey;
 		static uint32 maxUser;
 
-		static int32 acceptId;
-		static int32 notifyId;
-
 	private:
 		constexpr static char_t PATH[] = STR("Config.ini");
 	};
