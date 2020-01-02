@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>
+#include "Core.h"
 #include <string>
 #include <WinSock2.h>
 #include "Buffer.h"

@@ -23,6 +23,9 @@ add_library (${PROJECT_ID} STATIC
 	${SRC_SENDER}
 )
 
+# Dependencies
+set_public_dependencies (Library)
+
 # Filters
 source_group ("Exchanger" FILES ${SRC_EXCHANGER})
 source_group ("Receiver" FILES ${SRC_RECEIVER})
