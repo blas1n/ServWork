@@ -37,6 +37,11 @@ namespace ServWork
 		
 		size_t FindClientIndex(SockId sock) const;
 
+		inline const std::vector<ClientSocket>& GetClients() const noexcept
+		{
+			return clients;
+		}
+
 		inline long GetEvent() const noexcept override
 		{
 			return FD_ACCEPT;
