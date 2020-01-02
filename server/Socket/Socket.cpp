@@ -1,54 +1,55 @@
-#include "BaseSocket.h"
+#include "Socket.h"
 #include <chrono>
-#include <stdexcept>
 #include <thread>
 #include "Config.h"
 #include "Name.h"
 
 namespace ServWork
 {
-	BaseSocket::BaseSocket(SockId id/*= INVALID_SOCKET*/)
+	Socket::Socket(SockId id/*= INVALID_SOCKET*/)
 		: s(id) {}
 
-	BaseSocket::BaseSocket(BaseSocket&& other) noexcept
-		: s(std::move(other.s))
-	{
-		other.s = 0;
-	}
+	Socket::Socket(Socket&& other) noexcept
+		: s(std::exchange(other.s, 0)) {}
 
-	BaseSocket& BaseSocket::operator=(BaseSocket&& other) noexcept
+	Socket& Socket::operator=(Socket&& other) noexcept
 	{
-		s = std::move(other.s);
-		other.s = 0;
+		s = std::exchange(other.s, 0);
 		return *this;
 	}
 
-	BaseSocket::~BaseSocket()
+	Socket::~Socket()
 	{
 		if (s != INVALID_SOCKET)
 			Close();
 	}
 
-	bool BaseSocket::Send(byte id, Buffer& buf) const
+	void Socket::Close() noexcept
 	{
-		if (s == INVALID_SOCKET)
-			throw std::logic_error{ Name{ "Socket not open" } };
-
-		const auto size = buf.GetCurBufferSize();
-
-		const Header header{ Config::checkKey, id, size };
-		buf >>= HEADER_SIZE;
-		buf.Set(0, header);
-
-		return recv(s, buf, buf.GetCurBufferSize(), 0) == size;
+		closesocket(s);
+		s = INVALID_SOCKET;
 	}
 
-	bool BaseSocket::Recv(Buffer& buf, size_t size) const
+	bool Socket::Send(byte id, Buffer& buf) const
+	{
+		if (s == INVALID_SOCKET)
+			throw Warning{ Name{ "socket_not_open" } };
+
+		buf >>= HEADER_SIZE;
+		
+		const auto size = buf.GetCurSize();
+		const Header header{ Config::checkKey, id, size };
+		buf.Set(0, header);
+
+		return send(s, buf, buf.GetCurSize(), 0) == size;
+	}
+
+	bool Socket::Recv(Buffer& buf, size_t size) const
 	{
 		using namespace std::chrono_literals;
 		
 		if (s == INVALID_SOCKET)
-			throw std::logic_error{ Name{ "Socket not open" } };
+			throw Warning{ Name{ "socket_not_open" } };
 
 		auto tmp = new char[size];
 		size_t totalSize = 0;

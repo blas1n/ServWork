@@ -1,9 +1,9 @@
-#include "ServString.h"
+#include "Name.h"
 #include "StringMapper.h"
 
 namespace ServWork
 {
-	String::operator std::string() const
+	std::string Name::Get() const
 	{
 		return StringMapper::Get(id);
 	}

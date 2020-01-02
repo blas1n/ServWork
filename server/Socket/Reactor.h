@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseSocket.h"
+#include "EventSocket.h"
 #include "UserData.h"
 
 namespace ServWork
@@ -8,9 +8,9 @@ namespace ServWork
 	class Reactor
 	{
 	public:
-		virtual void OnReceive(const BaseSocket& socket, uint8 id, Buffer buf) {}
-		virtual void OnAccept(UserData* user) {}
-		virtual void OnClose(UserData* user) {}
+		virtual void OnReceive(const EventSocket& socket, uint8 id, Buffer buf) {}
+		virtual void OnAccept(const EventSocket& socket) {}
+		virtual void OnClose(const EventSocket& socket) {}
 		virtual void OnLimitError(const wchar_t* ip) {}
 	};
 }

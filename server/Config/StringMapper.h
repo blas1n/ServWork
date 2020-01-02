@@ -1,7 +1,5 @@
 #pragma once
 
-#include <map>
-#include <string>
 #include "INI.h"
 
 namespace ServWork::StringMapper

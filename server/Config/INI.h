@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
+#include "Core.h"
 #include <map>
+#include <string>
 
 namespace ServWork
 {
