@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNING
+
 #include "ServerSocket.h"
 #include <algorithm>
 #include "Config.h"
@@ -88,7 +90,7 @@ namespace ServWork
 
 	size_t ServerSocket::FindClientIndex(SockId sock) const
 	{
-		auto iter = std::find_if(clients.begin(), clients.end(), [](auto client)
+		auto iter = std::find_if(clients.begin(), clients.end(), [sock](auto client)
 			{
 				return client.GetId() == sock;
 			});

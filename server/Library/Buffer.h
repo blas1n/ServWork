@@ -64,11 +64,13 @@ namespace ServWork
 		inline Buffer& operator<<=(size_t index) noexcept
 		{
 			std::rotate(vec.begin(), vec.begin() + index, vec.end());
+			return *this;
 		}
 
 		inline Buffer& operator>>=(size_t index) noexcept
 		{
 			std::rotate(vec.rbegin(), vec.rbegin() + index, vec.rend());
+			return *this;
 		}
 
 		inline void Reserve(size_t size)
@@ -91,7 +93,7 @@ namespace ServWork
 			if (index < 0)
 				index = GetCurSize() + index;
 
-			std::copy_n(content, size, vec.cbegin() + index);
+			std::copy_n(content, size, vec.begin() + index);
 		}
 
 		inline byte* Get(size_t index = 0) noexcept
@@ -169,4 +171,31 @@ namespace ServWork
 	private:
 		std::vector<byte> vec;
 	};
+
+	inline Buffer operator+(const Buffer& buffer, const char* content)
+	{
+		 return Buffer{ buffer } += content;
+	}
+
+	template <size_t N>
+	inline Buffer operator+(const Buffer& buffer, const byte(&content)[N])
+	{
+		return Buffer{ buffer } += content;
+	}
+
+	template <class T>
+	inline Buffer operator+(const Buffer& buffer, const T& content)
+	{
+		return Buffer{ buffer } += content;
+	}
+
+	inline Buffer operator<<(const Buffer& buffer, size_t index) noexcept
+	{
+		return Buffer{ buffer } <<= index;
+	}
+
+	inline Buffer operator>>(const Buffer& buffer, size_t index) noexcept
+	{
+		return Buffer{ buffer } >>= index;
+	}
 }

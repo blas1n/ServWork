@@ -2,7 +2,6 @@ set_project ()
 
 # Files
 set (SRC_CLIENT_SOCKET
-	ClientSocket.cpp
 	ClientSocket.h
 )
 
@@ -35,6 +34,10 @@ set (SRC_USER_DATA
 	UserData.h
 )
 
+set (SRC
+	Def.h
+)
+
 # Target
 add_library (${PROJECT_ID} STATIC
 	${SRC_CLIENT_SOCKET}
@@ -44,6 +47,7 @@ add_library (${PROJECT_ID} STATIC
 	${SRC_SERVER_SOCKET}
 	${SRC_SOCKET}
 	${SRC_USER_DATA}
+	${SRC}
 )
 
 # Dependencies
@@ -57,3 +61,4 @@ source_group ("Reactor" FILES ${SRC_REACTOR})
 source_group ("Server Socket" FILES ${SRC_SERVER_SOCKET})
 source_group ("Socket" FILES ${SRC_SOCKET})
 source_group ("User Data" FILES ${SRC_USER_DATA})
+source_group ("" FILES ${SRC})

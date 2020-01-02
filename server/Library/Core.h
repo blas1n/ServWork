@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma warning(disable:4996)
+
 #include <cstddef>
 #include "Exception.h"
 #include "Name.h"

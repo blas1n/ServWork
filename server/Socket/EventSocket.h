@@ -26,7 +26,7 @@ namespace ServWork
 		virtual void OnReceive();
 		virtual void OnClose();
 
-		inline Reactor* GetReactor() const noexcept { return reactor; }
+		inline class Reactor* GetReactor() const noexcept { return reactor; }
 		inline void SetReactor(Reactor* inReactor) noexcept { reactor = inReactor; }
 
 		virtual inline long GetEvent() const noexcept { return 0; }
@@ -35,6 +35,6 @@ namespace ServWork
 		void ProcessRecvEvent();
 
 	protected:
-		class Reactor* reactor;
+		Reactor* reactor;
 	};
 }

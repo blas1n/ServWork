@@ -37,11 +37,11 @@ namespace ServWork
 
 		buf >>= HEADER_SIZE;
 		
-		const auto size = buf.GetCurSize();
+		const auto size = static_cast<uint32>(buf.GetCurSize());
 		const Header header{ Config::checkKey, id, size };
 		buf.Set(0, header);
 
-		return send(s, buf, buf.GetCurSize(), 0) == size;
+		return send(s, buf, size, 0) == size;
 	}
 
 	bool Socket::Recv(Buffer& buf, size_t size) const
@@ -57,7 +57,7 @@ namespace ServWork
 
 		while (totalSize < size)
 		{
-			size_t readSize = recv(s, tmp, size - totalSize, 0);
+			size_t readSize = recv(s, tmp, static_cast<int>(size - totalSize), 0);
 			buf.Set(totalSize, tmp, readSize);
 
 			if (readSize == SOCKET_ERROR)

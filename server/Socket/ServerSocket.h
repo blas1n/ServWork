@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EventSocket.h"
 #include <vector>
 #include "ClientSocket.h"
 

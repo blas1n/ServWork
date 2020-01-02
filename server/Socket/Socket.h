@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Buffer.h"
 #include "Def.h"
 
 namespace ServWork

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EventSocket.h"
+#include "UserData.h"
 
 namespace ServWork
 {
@@ -9,8 +10,13 @@ namespace ServWork
 		using Base = EventSocket;
 
 	public:
-		ClientSocket(wchar_t* ip);
-		~ClientSocket() override;
+		ClientSocket()
+			: Base(), data(new UserData()) {}
+
+		~ClientSocket() override
+		{
+			delete data;
+		}
 
 		inline long GetEvent() const noexcept override
 		{

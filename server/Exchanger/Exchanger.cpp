@@ -29,6 +29,6 @@ namespace ServWork
 		if (maxSize == 0)
 			throw Warning{ "max_size_is_0" };
 
-		return curSize / maxSize;
+		return static_cast<double>(curSize) / maxSize;
 	}
 }

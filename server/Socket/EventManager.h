@@ -2,6 +2,7 @@
 
 #include "Def.h"
 #include <vector>
+#include <tuple>
 
 namespace ServWork
 {
@@ -14,10 +15,10 @@ namespace ServWork
 		static EventManager& Get();
 		
 		void RegisterEvent(const class EventSocket& socket, long event);
-		void UnregisterEvent(const class EventSocket& socket);
-		void ChangeEvent(const class EventSocket& socket, long event);
+		void UnregisterEvent(const EventSocket& socket);
+		void ChangeEvent(const EventSocket& socket, long event);
 		
-		decltype(auto) GetNetworkEvent() noexcept;
+		std::tuple<DWORD, long> GetNetworkEvent() noexcept;
 
 		inline SockId GetId(size_t index) const noexcept { return ids[index]; }
 
@@ -26,8 +27,6 @@ namespace ServWork
 	private:
 		EventManager() = default;
 		~EventManager() = default;
-		
-		decltype(auto) GetHandles(const class EventSocket& socket);
 
 	private:
 		std::vector<SockId> ids;

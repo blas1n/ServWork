@@ -18,6 +18,12 @@ set (SRC_STRING_TRANSLATOR
 	StringTranslator.h
 )
 
+set (SRC_THREAD_POOL
+	ThreadAccesser.h
+	ThreadPool.cpp
+	ThreadPool.h
+)
+
 set (SRC
 	Core.h
 )
@@ -28,6 +34,7 @@ add_library (${PROJECT_ID} STATIC
 	${SRC_EXCEPTION}
 	${SRC_NAME}
 	${SRC_STRING_TRANSLATOR}
+	${SRC_THREAD_POOL}
 	${SRC}
 )
 
@@ -39,4 +46,5 @@ source_group ("Buffer" FILES ${SRC_BUFFER})
 source_group ("Exception" FILES ${SRC_EXCEPTION})
 source_group ("Name" FILES ${SRC_NAME})
 source_group ("String Translator" FILES ${SRC_STRING_TRANSLATOR})
+source_group ("Thread Pool" FILES ${SRC_THREAD_POOL})
 source_group ("" FILES ${SRC})

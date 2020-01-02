@@ -2,7 +2,6 @@
 #include <functional>
 #include <iostream>
 #include <map>
-#include <Windows.h>
 #include "Config.h"
 #include "EventManager.h"
 #include "ServerSocket.h"
@@ -13,10 +12,15 @@ namespace ServWork
 		: sock{ new ServerSocket }
 	{
 		WSADATA wsa;
-		WSAStartup(MAKEWORD(2, 2), &wsa);
+		if (!WSAStartup(MAKEWORD(2, 2), &wsa))
+		{
+			std::cout << Name{ "cannot_start_up_wsa" }.Get() << std::endl;
+			exit(3);
+		}
 
 		try
 		{
+			setlocale(LC_ALL, "");
 			Config::Init();
 			sock->SetReactor(reactor);
 			sock->Open();
@@ -24,6 +28,7 @@ namespace ServWork
 		catch (std::exception& e)
 		{
 			std::cout << Name{ "cannot_start" }.Get() << e.what() << std::endl;
+			exit(2);
 		}
 	}
 
@@ -36,7 +41,7 @@ namespace ServWork
 
 	int Engine::Run()
 	{
-		std::map<long, void(EventSocket::*)()> func
+		std::map<long, std::function<void(EventSocket&)>> func
 		{
 			std::make_pair(FD_ACCEPT, &EventSocket::OnAccept),
 			std::make_pair(FD_READ, &EventSocket::OnReceive),
@@ -53,10 +58,21 @@ namespace ServWork
 				const auto id = EventManager::Get().GetId(index);
 				socket = sock->FindClient(id);
 			}
-
-			try { func[event](socket); }
-			catch (Warning& e) { continue; }
-			catch (Error& e) { return 1; }
+			
+			try
+			{
+				func[event](socket);
+			}
+			catch (Warning& e)
+			{
+				std::cout << e.what() << std::endl;
+				continue;
+			}
+			catch (Error& e)
+			{
+				std::cout << e.what() << std::endl;
+				exit(1);
+			}
 		}
 
 		return 0;
