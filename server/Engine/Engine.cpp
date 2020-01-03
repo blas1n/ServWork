@@ -42,7 +42,7 @@ namespace ServWork
 
 	int EngineBase::Run()
 	{
-		std::map<long, void(ClientSocket::*)()> func
+		std::map<long, std::function<void(ClientSocket&)>> func
 		{
 			std::make_pair(FD_READ, &ClientSocket::OnReceive),
 			std::make_pair(FD_CLOSE, &ClientSocket::OnClose)
@@ -56,7 +56,7 @@ namespace ServWork
 			
 			if (event == FD_ACCEPT)
 			{
-				threadPool.AddTask(&ServerSocket::Accept, socket);
+				threadPool.AddTask(&ServerSocket::Accept, *sock);
 				continue;
 			}
 
