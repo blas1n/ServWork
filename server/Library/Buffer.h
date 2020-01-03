@@ -30,7 +30,30 @@ namespace ServWork
 			return *this;
 		}
 
+		Buffer& operator=(const char_t* content)
+		{
+			Init();
+			Set(0, content);
+			return *this;
+		}
+
 		Buffer& operator=(const byte* content)
+		{
+			Init();
+			Set(0, content);
+			return *this;
+		}
+
+		template <size_t N>
+		Buffer& operator=(const byte(&content)[N])
+		{
+			Init();
+			Set(0, content);
+			return *this;
+		}
+
+		template <class T>
+		Buffer& operator=(const T& content)
 		{
 			Init();
 			Set(0, content);
@@ -45,6 +68,13 @@ namespace ServWork
 		inline Buffer& operator+=(const char* content)
 		{
 			const auto len = strnlen(content, GetMaxSize());
+			vec.insert(vec.cend(), content, content + len);
+			return *this;
+		}
+
+		inline Buffer& operator+=(const char_t* content)
+		{
+			const auto len = wcsnlen(content, GetMaxSize()) * sizeof(char_t);
 			vec.insert(vec.cend(), content, content + len);
 			return *this;
 		}
@@ -197,7 +227,12 @@ namespace ServWork
 
 	inline Buffer operator+(const Buffer& buffer, const char* content)
 	{
-		 return Buffer{ buffer } += content;
+		return Buffer{ buffer } += content;
+	}
+
+	inline Buffer operator+(const Buffer& buffer, const char_t* content)
+	{
+		return Buffer{ buffer } += content;
 	}
 
 	template <size_t N>
