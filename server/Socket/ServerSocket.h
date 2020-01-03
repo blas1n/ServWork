@@ -42,6 +42,8 @@ namespace ServWork
 			return clients;
 		}
 
+		void SetReactor(Reactor* inReactor) noexcept override;
+
 		inline long GetEvent() const noexcept override
 		{
 			return FD_ACCEPT;

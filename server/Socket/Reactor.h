@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EventSocket.h"
+#include "ServerSocket.h"
 #include "UserData.h"
 
 namespace ServWork
@@ -12,5 +12,11 @@ namespace ServWork
 		virtual void OnAccept(const EventSocket& socket) {}
 		virtual void OnClose(const EventSocket& socket) {}
 		virtual void OnLimitError(const char_t* ip) {}
+
+		const ServerSocket& GetServer() const noexcept { return *server; }
+		void SetServer(const ServerSocket* inServer) noexcept { server = inServer; }
+
+	private:
+		const ServerSocket* server;
 	};
 }

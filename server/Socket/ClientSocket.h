@@ -23,7 +23,7 @@ namespace ServWork
 			return FD_READ | FD_CLOSE;
 		}
 
-		inline class UserData& GetData() noexcept { return *data; }
+		inline UserData& GetData() noexcept { return *data; }
 		inline const UserData& GetData() const noexcept { return *data; }
 
 	private:

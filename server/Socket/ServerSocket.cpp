@@ -97,4 +97,10 @@ namespace ServWork
 		
 		return iter - clients.cbegin();
 	}
+
+	void ServerSocket::SetReactor(Reactor* inReactor) noexcept
+	{
+		Base::SetReactor(inReactor);
+		reactor->SetServer(this);
+	}
 }
