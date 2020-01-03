@@ -8,7 +8,7 @@ namespace ServWork
 	class Socket
 	{
 	public:
-		Socket(SockId id = INVALID_SOCKET);
+		Socket();
 
 		Socket(const Socket&) = default;
 		Socket(Socket&& other) noexcept;
@@ -25,6 +25,7 @@ namespace ServWork
 		void Recv(Buffer& buf, size_t size) const;
 
 		inline SockId GetId() const noexcept { return s; }
+		inline SockId SetId(SockId id) noexcept { return s = id; }
 
 	protected:
 		SockId s;

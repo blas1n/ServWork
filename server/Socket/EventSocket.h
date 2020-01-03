@@ -9,7 +9,7 @@ namespace ServWork
 		using Base = Socket;
 
 	public:
-		EventSocket(SockId id = INVALID_SOCKET);
+		EventSocket();
 
 		EventSocket(const EventSocket&) = default;
 		EventSocket(EventSocket&&) noexcept = default;
@@ -22,17 +22,10 @@ namespace ServWork
 		void Open() override;
 		void Close() noexcept override;
 
-		virtual void OnAccept();
-		virtual void OnReceive();
-		virtual void OnClose();
-
 		inline class Reactor* GetReactor() const noexcept { return reactor; }
-		virtual inline void SetReactor(Reactor* inReactor) noexcept { reactor = inReactor; }
+		inline void SetReactor(Reactor* inReactor) noexcept { reactor = inReactor; }
 
 		virtual inline long GetEvent() const noexcept { return 0; }
-
-	private:
-		void ProcessRecvEvent();
 
 	protected:
 		Reactor* reactor;

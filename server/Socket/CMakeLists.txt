@@ -2,6 +2,7 @@ set_project ()
 
 # Files
 set (SRC_CLIENT_SOCKET
+	ClientSocket.cpp
 	ClientSocket.h
 )
 

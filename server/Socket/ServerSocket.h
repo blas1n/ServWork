@@ -23,7 +23,7 @@ namespace ServWork
 		void Open() override;
 		void Close() noexcept override;
 
-		void OnAccept() override;
+		void Accept();
 
 		inline ClientSocket& FindClient(SockId sock)
 		{
@@ -41,8 +41,6 @@ namespace ServWork
 		{
 			return clients;
 		}
-
-		void SetReactor(Reactor* inReactor) noexcept override;
 
 		inline long GetEvent() const noexcept override
 		{

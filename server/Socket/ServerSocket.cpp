@@ -61,7 +61,7 @@ namespace ServWork
 		Base::Close();
 	}
 
-	void ServerSocket::OnAccept()
+	void ServerSocket::Accept()
 	{
 		AddrIn addr;
 		SockLen len = sizeof(AddrIn);
@@ -82,7 +82,10 @@ namespace ServWork
 
 		auto client = clients[clientNum++];
 		client.Open();
+		client.SetId(newSocket);
+		client.SetReactor(reactor);
 		client.GetData().SetIp(ip.c_str());
+		client.OnAccept();
 	}
 
 	size_t ServerSocket::FindClientIndex(SockId sock) const
@@ -96,11 +99,5 @@ namespace ServWork
 			throw MakeWarning("the_client_does_not_exist");
 		
 		return iter - clients.cbegin();
-	}
-
-	void ServerSocket::SetReactor(Reactor* inReactor) noexcept
-	{
-		Base::SetReactor(inReactor);
-		reactor->SetServer(this);
 	}
 }

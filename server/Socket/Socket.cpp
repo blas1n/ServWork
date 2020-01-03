@@ -5,15 +5,15 @@
 
 namespace ServWork
 {
-	Socket::Socket(SockId id/*= INVALID_SOCKET*/)
-		: s(id) {}
+	Socket::Socket()
+		: s(INVALID_SOCKET) {}
 
 	Socket::Socket(Socket&& other) noexcept
-		: s(std::exchange(other.s, 0)) {}
+		: s(std::exchange(other.s, INVALID_SOCKET)) {}
 
 	Socket& Socket::operator=(Socket&& other) noexcept
 	{
-		s = std::exchange(other.s, 0);
+		s = std::exchange(other.s, INVALID_SOCKET);
 		return *this;
 	}
 

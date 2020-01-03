@@ -9,7 +9,7 @@
 
 namespace ServWork
 {
-	Engine::Engine(Reactor* reactor)
+	EngineBase::EngineBase()
 		: sock{ new ServerSocket }
 	{
 		std::locale::global(std::locale(""));
@@ -24,7 +24,6 @@ namespace ServWork
 		try
 		{
 			Config::Init();
-			sock->SetReactor(reactor);
 			sock->Open();
 		}
 		catch (Exception& e)
@@ -34,14 +33,14 @@ namespace ServWork
 		}
 	}
 
-	Engine::~Engine()
+	EngineBase::~EngineBase()
 	{
 		sock->Close();
 		WSACleanup();
 		delete sock;
 	}
 
-	int Engine::Run()
+	int EngineBase::Run()
 	{
 		std::map<long, std::function<void(EventSocket&)>> func
 		{

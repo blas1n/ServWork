@@ -11,12 +11,16 @@ namespace ServWork
 
 	public:
 		ClientSocket()
-			: Base(), data(new UserData()) {}
+			: Base(), data(new UserData{ }) {}
 
 		~ClientSocket() override
 		{
 			delete data;
 		}
+
+		void OnAccept();
+		void OnReceive();
+		void OnClose();
 
 		inline long GetEvent() const noexcept override
 		{
@@ -25,6 +29,9 @@ namespace ServWork
 
 		inline UserData& GetData() noexcept { return *data; }
 		inline const UserData& GetData() const noexcept { return *data; }
+
+	private:
+		void ProcessRecvEvent();
 
 	private:
 		UserData* data;
