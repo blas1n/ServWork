@@ -12,16 +12,6 @@ namespace ServWork
 
 	void ClientSocket::OnReceive()
 	{
-		ProcessRecvEvent();
-	}
-
-	void ClientSocket::OnClose()
-	{
-		reactor->OnClose(*this);
-	}
-
-	void ClientSocket::ProcessRecvEvent()
-	{
 		EventManager::Get().ChangeEvent(*this, GetEvent() | ~FD_READ);
 
 		uint8 key = 0;
@@ -44,5 +34,10 @@ namespace ServWork
 
 		reactor->OnReceive(*this, id, std::move(buf));
 		EventManager::Get().ChangeEvent(*this, GetEvent());
+	}
+
+	void ClientSocket::OnClose()
+	{
+		reactor->OnClose(*this);
 	}
 }

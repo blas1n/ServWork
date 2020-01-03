@@ -42,13 +42,6 @@ namespace ServWork
 
 	int EngineBase::Run()
 	{
-		std::map<long, std::function<void(EventSocket&)>> func
-		{
-			std::make_pair(FD_ACCEPT, &EventSocket::OnAccept),
-			std::make_pair(FD_READ, &EventSocket::OnReceive),
-			std::make_pair(FD_CLOSE, &EventSocket::OnClose)
-		};
-
 		ThreadPool threadPool;
 
 		while (true)
@@ -64,7 +57,18 @@ namespace ServWork
 			
 			try
 			{
-				threadPool.AddTask(func[event], socket);
+				switch (event)
+				{
+				case FD_ACCEPT:
+					threadPool.AddTask(&ServerSocket::Accept, socket);
+					break;
+				case FD_READ:
+					threadPool.AddTask(&ClientSocket::OnReceive, socket);
+					break;
+				case FD_CLOSE:
+					threadPool.AddTask(&ClientSocket::OnClose, socket);
+					break;
+				}
 			}
 			catch (Warning& e)
 			{

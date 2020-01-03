@@ -31,9 +31,6 @@ namespace ServWork
 		inline const UserData& GetData() const noexcept { return *data; }
 
 	private:
-		void ProcessRecvEvent();
-
-	private:
 		UserData* data;
 	};
 }
