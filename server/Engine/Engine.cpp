@@ -42,33 +42,29 @@ namespace ServWork
 
 	int EngineBase::Run()
 	{
+		std::map<long, void(ClientSocket::*)()> func
+		{
+			std::make_pair(FD_READ, &ClientSocket::OnReceive),
+			std::make_pair(FD_CLOSE, &ClientSocket::OnClose)
+		};
+
 		ThreadPool threadPool;
 
 		while (true)
 		{
 			const auto [index, event] = EventManager::Get().GetNetworkEvent();
 			
-			EventSocket& socket = *sock;
-			if (index > 0)
+			if (event == FD_ACCEPT)
 			{
-				const auto id = EventManager::Get().GetId(index);
-				socket = sock->FindClient(id);
+				threadPool.AddTask(&ServerSocket::Accept, socket);
+				continue;
 			}
-			
+
 			try
 			{
-				switch (event)
-				{
-				case FD_ACCEPT:
-					threadPool.AddTask(&ServerSocket::Accept, socket);
-					break;
-				case FD_READ:
-					threadPool.AddTask(&ClientSocket::OnReceive, socket);
-					break;
-				case FD_CLOSE:
-					threadPool.AddTask(&ClientSocket::OnClose, socket);
-					break;
-				}
+				const auto id = EventManager::Get().GetId(index);
+				auto& socket = sock->FindClient(id);
+				threadPool.AddTask(func[event], socket);
 			}
 			catch (Warning& e)
 			{
@@ -78,7 +74,7 @@ namespace ServWork
 			catch (Error& e)
 			{
 				std::wcout << e.What() << std::endl;
-				exit(1);
+				return 1;
 			}
 		}
 
