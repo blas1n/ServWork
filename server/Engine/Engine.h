@@ -21,6 +21,7 @@ namespace ServWork
 	template <class T, class = std::enable_if_t<std::is_base_of_v<Reactor, T>>>
 	class Engine final : public EngineBase
 	{
+	public:
 		Engine()
 			: EngineBase(),
 			reactor(new T{ sock }) {}
