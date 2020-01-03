@@ -15,18 +15,26 @@ namespace ServWork
 		int Run();
 
 	protected:
-		class ServerSocket* sock;
+		ServerSocket* sock;
 	};
 
-	template <class T, class = std::enable_if_t<std::is_base_of_v<Reactor, T>>>
+	template <class T>
 	class Engine final : public EngineBase
 	{
 	public:
 		Engine()
 			: EngineBase(),
-			reactor(new T{ sock }) {}
+			reactor(new T)
+		{
+			reactor->SetServer(sock);
+		}
+
+		~Engine() override
+		{
+			delete reactor;
+		}
 
 	private:
-		T* reactor;
+		Reactor* reactor;
 	};
 }
