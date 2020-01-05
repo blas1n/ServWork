@@ -43,7 +43,7 @@ namespace ServWork
 	std::tuple<DWORD, long> EventManager::GetNetworkEvent() noexcept
 	{
 		const auto index = WSAWaitForMultipleEvents
-			(static_cast<DWORD>(ids.size()), events.data(), false, INFINITE, false);
+			(static_cast<DWORD>(GetSize()), events.data(), false, INFINITE, false);
 
 		WSANETWORKEVENTS event;
 		WSAEnumNetworkEvents(ids[index], events[index], &event);

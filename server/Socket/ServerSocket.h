@@ -49,6 +49,5 @@ namespace ServWork
 
 	private:
 		std::vector<ClientSocket> clients;
-		size_t clientNum;
 	};
 }

@@ -9,6 +9,7 @@ include (util)
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
+set (SERV_WORK_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 set (FOLDER_NAME ${ARCH}-${CMAKE_BUILD_TYPE})
 
@@ -23,6 +24,4 @@ endif ()
 
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
-add_compile_definitions (ROOT_DIR="${CMAKE_SOURCE_DIR}/")
-add_compile_definitions (CUR_DIR="${CMAKE_CURRENT_LIST_DIR}/")
 add_subdirectory (server)

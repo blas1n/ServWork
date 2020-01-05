@@ -12,12 +12,12 @@ namespace ServWork
 	EngineBase::EngineBase()
 		: sock{ new ServerSocket }
 	{
-		std::locale::global(std::locale(""));
+		std::locale::global(std::locale{ "ko_KR.UTF-8" });
 
 		WSADATA wsa;
-		if (!WSAStartup(MAKEWORD(2, 2), &wsa))
+		if (WSAStartup(MAKEWORD(2, 2), &wsa))
 		{
-			std::wcout << Name{ STR("cannot_start_up_wsa") }.Get() << std::endl;
+			std::cout << Name{ STR("cannot_start_up_wsa") }.Get() << std::endl;
 			exit(3);
 		}
 
@@ -28,9 +28,11 @@ namespace ServWork
 		}
 		catch (Exception& e)
 		{
-			std::wcout << Name{ STR("cannot_start") }.Get() << e.What() << std::endl;
+			std::cout << Name{ STR("cannot_start") }.Get() << e.What() << std::endl;
 			exit(2);
 		}
+
+		std::cout << Name{ STR("start") }.Get() << std::endl;
 	}
 
 	EngineBase::~EngineBase()
@@ -38,6 +40,8 @@ namespace ServWork
 		sock->Close();
 		WSACleanup();
 		delete sock;
+
+		std::cout << Name{ STR("end") }.Get() << std::endl;
 	}
 
 	int EngineBase::Run()
@@ -56,7 +60,7 @@ namespace ServWork
 			
 			if (event == FD_ACCEPT)
 			{
-				threadPool.AddTask(&ServerSocket::Accept, *sock);
+				sock->Accept();
 				continue;
 			}
 
@@ -64,16 +68,16 @@ namespace ServWork
 			{
 				const auto id = EventManager::Get().GetId(index);
 				auto& socket = sock->FindClient(id);
-				threadPool.AddTask(func[event], socket);
+				func[event](socket);
 			}
 			catch (Warning& e)
 			{
-				std::wcout << e.What() << std::endl;
+				std::cout << e.What() << std::endl;
 				continue;
 			}
 			catch (Error& e)
 			{
-				std::wcout << e.What() << std::endl;
+				std::cout << e.What() << std::endl;
 				return 1;
 			}
 		}

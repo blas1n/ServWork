@@ -11,7 +11,7 @@ namespace ServWork \
 	using name = Internal::ExceptionTemplate<Internal::name##Tag>; \
 	inline name Make##name(const char* msg) noexcept \
 	{ \
-		return name{ Name{ StringTranslator::AsciiToUnicode(msg) } }; \
+		return name{ Name{ msg } }; \
 	} \
 }
 

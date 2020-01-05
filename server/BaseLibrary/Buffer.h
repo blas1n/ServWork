@@ -23,7 +23,6 @@ namespace ServWork
 
 		~Buffer() = default;
 
-		Buffer& operator=(const char* content);
 		Buffer& operator=(const char_t* content);
 		Buffer& operator=(const byte* content);
 
@@ -48,7 +47,6 @@ namespace ServWork
 			return vec[index];
 		}
 
-		Buffer& operator+=(const char* content);
 		Buffer& operator+=(const char_t* content);
 
 		template <size_t N>
@@ -96,12 +94,6 @@ namespace ServWork
 			return vec.data() + index;
 		}
 
-		inline void Set(size_t index, const char* content)
-		{
-			Set(index, reinterpret_cast<const byte*>(content),
-				strnlen(content, GetMaxSize() - index));
-		}
-
 		void Set(size_t index, const byte* content, size_t size);
 
 		template <size_t N>
@@ -110,15 +102,10 @@ namespace ServWork
 			Set(index, content, N);
 		}
 
-		inline void Set(size_t index, const char* content, size_t size)
-		{
-			Set(index, reinterpret_cast<const byte*>(content), size);
-		}
-
 		inline void Set(size_t index, const char_t* content)
 		{
 			Set(index, reinterpret_cast<const byte*>(content),
-				wcsnlen(content, GetMaxSize() - index));
+				strnlen(content, GetMaxSize() - index));
 		}
 
 		inline void Set(size_t index, const char_t* content, size_t size)
@@ -162,16 +149,6 @@ namespace ServWork
 			return reinterpret_cast<const char_t*>(Get());
 		}
 
-		inline operator char*() noexcept
-		{
-			return reinterpret_cast<char*>(Get());
-		}
-
-		inline operator const char*() const noexcept
-		{
-			return reinterpret_cast<const char*>(Get());
-		}
-
 		inline operator void*() noexcept
 		{
 			return reinterpret_cast<void*>(Get());
@@ -190,11 +167,6 @@ namespace ServWork
 	private:
 		std::vector<byte> vec;
 	};
-
-	inline Buffer operator+(const Buffer& buffer, const char* content)
-	{
-		return Buffer{ buffer } += content;
-	}
 
 	inline Buffer operator+(const Buffer& buffer, const char_t* content)
 	{

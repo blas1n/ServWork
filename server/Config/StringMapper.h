@@ -11,8 +11,8 @@ namespace ServWork::StringMapper
 		static char_t rootConfigPath[ArrSize(ROOT_PATH) + ArrSize(PATH)];
 		static char_t curConfigPath[ArrSize(CUR_PATH) + ArrSize(PATH)];
 
-		static INI rootConfig{ wcscat(wcscat(rootConfigPath, ROOT_PATH), PATH) };
-		static INI curConfig{ wcscat(wcscat(curConfigPath, CUR_PATH), PATH) };
+		static INI rootConfig{ strcat(strcat(rootConfigPath, ROOT_PATH), PATH) };
+		static INI curConfig{ strcat(strcat(curConfigPath, CUR_PATH), PATH) };
 
 		const auto root = rootConfig.Get(key);
 		if (root)
