@@ -1,5 +1,6 @@
+add_subdirectory (BaseLibrary)
 add_subdirectory (Config)
-add_subdirectory (Engine)
-add_subdirectory (Exchanger)
 add_subdirectory (Library)
+add_subdirectory (Exchanger)
 add_subdirectory (Socket)
+add_subdirectory (Engine)

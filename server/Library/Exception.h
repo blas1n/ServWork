@@ -1,6 +1,19 @@
 #pragma once
 
+#include "Name.h"
+#include "StringTranslator.h"
 #include "Type.h"
+
+#define CREATE_EXCEPTION(name) \
+namespace ServWork \
+{ \
+	namespace Internal { struct name##Tag final {}; } \
+	using name = Internal::ExceptionTemplate<Internal::name##Tag>; \
+	inline name Make##name(const char* msg) noexcept \
+	{ \
+		return name{ Name{ StringTranslator::AsciiToUnicode(msg) } }; \
+	} \
+}
 
 namespace ServWork
 {
@@ -32,9 +45,6 @@ namespace ServWork
 
 	namespace Internal
 	{
-		struct ErrorTag final {};
-		struct WarningTag final {};
-
 		template <class Tag>
 		class ExceptionTemplate final : public Exception
 		{
@@ -48,7 +58,7 @@ namespace ServWork
 				: Base(inMsg) {}
 		};
 	}
-
-	using Error = Internal::ExceptionTemplate<Internal::ErrorTag>;
-	using Warning = Internal::ExceptionTemplate<Internal::WarningTag>;
 }
+
+CREATE_EXCEPTION(Error)
+CREATE_EXCEPTION(Warning)

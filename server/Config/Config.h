@@ -1,18 +1,19 @@
 #pragma once
 
-#include "Core.h"
+#include "Type.h"
 
 namespace ServWork
 {
-	struct Config final
+	class Config final
 	{
+	public:
 		static void Init();
 
-		static int32 port;
-		static int32 queueSize;
+		inline static int32 port = 0;
+		inline static int32 queueSize = 0;
 
-		static uint8 checkKey;
-		static uint32 maxUser;
+		inline static uint8 checkKey = 0;
+		inline static uint32 maxUser = 0;
 
 	private:
 		constexpr static char_t PATH[] = STR("Config.ini");

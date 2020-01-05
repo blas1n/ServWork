@@ -40,7 +40,7 @@ set (SRC
 )
 
 # Target
-add_library (${PROJECT_ID} STATIC
+set_library (
 	${SRC_CLIENT_SOCKET}
 	${SRC_EVENT_MANAGER}
 	${SRC_EVENT_SOCKET}
@@ -52,7 +52,8 @@ add_library (${PROJECT_ID} STATIC
 )
 
 # Dependencies
-set_public_dependencies (Config Exchanger)
+set_public_dependencies (Exchanger)
+target_link_libraries(${PROJECT_ID} PUBLIC wsock32 ws2_32)
 
 # Filters
 source_group ("Client Socket" FILES ${SRC_CLIENT_SOCKET})

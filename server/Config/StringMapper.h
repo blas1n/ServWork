@@ -14,11 +14,11 @@ namespace ServWork::StringMapper
 		static INI rootConfig{ wcscat(wcscat(rootConfigPath, ROOT_PATH), PATH) };
 		static INI curConfig{ wcscat(wcscat(curConfigPath, CUR_PATH), PATH) };
 
-		const auto root = rootConfig.GetChecked(key);
+		const auto root = rootConfig.Get(key);
 		if (root)
 			return *root;
 
-		const auto cur = curConfig.GetChecked(key);
+		const auto cur = curConfig.Get(key);
 		if (cur)
 			return *cur;
 
