@@ -17,7 +17,7 @@ set (SRC_SENDER
 )
 
 # Target
-add_library (${PROJECT_ID} STATIC
+set_library (
 	${SRC_EXCHANGER}
 	${SRC_RECEIVER}
 	${SRC_SENDER}

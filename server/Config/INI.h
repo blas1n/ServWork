@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Type.h"
 #include <map>
 
 namespace ServWork
@@ -18,8 +18,7 @@ namespace ServWork
 
 		~INI() = default;
 
-		const String& Get(const String& key) const;
-		const String* GetChecked(const String& key) const noexcept;
+		const String* Get(const String& key) const noexcept;
 
 		void Set(const String& key, const String& value);
 
