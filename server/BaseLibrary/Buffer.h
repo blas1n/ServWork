@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Type.h"
 #include <cstring>
 #include <vector>
 #include "StringTranslator.h"
@@ -23,26 +23,9 @@ namespace ServWork
 
 		~Buffer() = default;
 
-		Buffer& operator=(const char* content)
-		{
-			Init();
-			Set(0, content);
-			return *this;
-		}
-
-		Buffer& operator=(const char_t* content)
-		{
-			Init();
-			Set(0, content);
-			return *this;
-		}
-
-		Buffer& operator=(const byte* content)
-		{
-			Init();
-			Set(0, content);
-			return *this;
-		}
+		Buffer& operator=(const char* content);
+		Buffer& operator=(const char_t* content);
+		Buffer& operator=(const byte* content);
 
 		template <size_t N>
 		Buffer& operator=(const byte(&content)[N])
@@ -65,19 +48,8 @@ namespace ServWork
 			return vec[index];
 		}
 
-		inline Buffer& operator+=(const char* content)
-		{
-			const auto len = strnlen(content, GetMaxSize());
-			vec.insert(vec.cend(), content, content + len);
-			return *this;
-		}
-
-		inline Buffer& operator+=(const char_t* content)
-		{
-			const auto len = wcsnlen(content, GetMaxSize()) * sizeof(char_t);
-			vec.insert(vec.cend(), content, content + len);
-			return *this;
-		}
+		Buffer& operator+=(const char* content);
+		Buffer& operator+=(const char_t* content);
 
 		template <size_t N>
 		inline Buffer& operator+=(const byte(&content)[N])
@@ -130,6 +102,14 @@ namespace ServWork
 				strnlen(content, GetMaxSize() - index));
 		}
 
+		void Set(size_t index, const byte* content, size_t size);
+
+		template <size_t N>
+		inline void Set(size_t index, const byte(&content)[N])
+		{
+			Set(index, content, N);
+		}
+
 		inline void Set(size_t index, const char* content, size_t size)
 		{
 			Set(index, reinterpret_cast<const byte*>(content), size);
@@ -144,20 +124,6 @@ namespace ServWork
 		inline void Set(size_t index, const char_t* content, size_t size)
 		{
 			Set(index, reinterpret_cast<const byte*>(content), size);
-		}
-
-		void Set(size_t index, const byte* content, size_t size)
-		{
-			if (index < 0)
-				index = GetCurSize() + index;
-
-			std::copy_n(content, size, vec.begin() + index);
-		}
-
-		template <size_t N>
-		inline void Set(size_t index, const byte(&content)[N])
-		{
-			Set(index, content, N);
 		}
 
 		template <class T>

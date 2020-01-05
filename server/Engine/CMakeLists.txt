@@ -7,7 +7,7 @@ set (SRC
 )
 
 # Target
-add_library (${PROJECT_ID} STATIC
+set_library (
 	${SRC}
 )
 

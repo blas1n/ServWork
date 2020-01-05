@@ -1,5 +1,6 @@
 #include "INI.h"
 #include <fstream>
+#include <iostream>
 
 namespace ServWork
 {
@@ -8,7 +9,10 @@ namespace ServWork
 	{
 		std::wifstream in{ path };
 		if (!in.is_open())
-			throw MakeError("cannot_open_config_file");
+		{
+			std::cout << "Cannot open config file" << std::endl;
+			exit(1);
+		}
 
 		char_t tmp[128];
 		String buf;
@@ -24,32 +28,17 @@ namespace ServWork
 
 		in.close();
 	}
-	
-	const String& INI::Get(const String& key) const
+
+	const String* INI::Get(const String& key) const noexcept
 	{
 		auto iter = map.find(key);
-
-		if (iter == map.cend())
-			throw MakeWarning("cannot_find_key");
-
-		return iter->second;
-	}
-
-	const String* INI::GetChecked(const String& key) const noexcept
-	{
-		auto iter = map.find(key);
-
 		return (iter != map.cend()) ? &(iter->second) : nullptr;
 	}
 
 	void INI::Set(const String& key, const String& value)
 	{
 		map[key] = value;
-
 		std::wofstream out{ path };
-		if (!out.is_open())
-			throw MakeError("cannot_open_config_file");
-
 		for (const auto& pair : map)
 			out << pair.first << STR("=") << pair.second << std::endl;
 	}

@@ -36,8 +36,8 @@ namespace ServWork
 	};
 #pragma pack(pop)
 
-	constexpr char_t ROOT_PATH[] = STR(ROOT_DIR);
-	constexpr char_t CUR_PATH[] = STR(CUR_DIR);
+	constexpr char_t ROOT_PATH[] = STR("");
+	constexpr char_t CUR_PATH[] = STR("");
 	constexpr auto HEADER_SIZE = sizeof(Header);
 
 	template <typename T, size_t N>
