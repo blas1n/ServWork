@@ -13,6 +13,12 @@ namespace ServWork
 		ClientSocket()
 			: Base(), data(new UserData{ }) {}
 
+		ClientSocket(const ClientSocket&) = default;
+		ClientSocket(ClientSocket&&) = default;
+
+		ClientSocket& operator=(const ClientSocket&) = default;
+		ClientSocket& operator=(ClientSocket&&) = default;
+
 		~ClientSocket() override
 		{
 			delete data;

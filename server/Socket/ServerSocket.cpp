@@ -9,7 +9,8 @@
 namespace ServWork
 {
 	ServerSocket::ServerSocket()
-		: Base(), clients(Config::maxUser) {}
+		: Base(),
+		clients(std::make_shared<std::vector<ClientSocket>>(Config::maxUser)) {}
 
 	void ServerSocket::Open()
 	{
@@ -51,8 +52,8 @@ namespace ServWork
 
 	void ServerSocket::Close() noexcept
 	{
-		clients[clients.size() - 1].Close();
-		clients.pop_back();
+		for (auto& client : *clients)
+			client.Close();
 
 		LINGER linger{ 1, 0 };
 		setsockopt(s, SOL_SOCKET, SO_LINGER,
@@ -81,24 +82,25 @@ namespace ServWork
 		}
 
 		ClientSocket client{ };
-		client.Open();
-		client.SetId(newSocket);
-		client.SetReactor(reactor);
 		client.GetData().SetIp(ip.c_str());
+		client.SetReactor(reactor);
+		client.SetId(newSocket);
+		client.Open();
+
+		clients->emplace_back(std::move(client));
 		client.OnAccept();
-		clients.emplace_back(std::move(client));
 	}
 
 	size_t ServerSocket::FindClientIndex(SockId sock) const
 	{
-		auto iter = std::find_if(clients.begin(), clients.end(), [sock](auto client)
+		auto iter = std::find_if(clients->begin(), clients->end(), [sock](auto client)
 			{
 				return client.GetId() == sock;
 			});
 
-		if (iter == clients.end())
+		if (iter == clients->end())
 			throw MakeWarning("the_client_does_not_exist");
 		
-		return iter - clients.cbegin();
+		return iter - clients->cbegin();
 	}
 }

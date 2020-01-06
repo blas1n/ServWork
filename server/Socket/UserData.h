@@ -10,6 +10,9 @@ namespace ServWork
 	{
 	public:
 		UserData();
+		
+
+		
 		~UserData();
 
 		inline const char_t* GetIp() const noexcept { return ip; }
