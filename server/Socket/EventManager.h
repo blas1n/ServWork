@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Def.h"
+#include <mutex>
 #include <vector>
 #include <tuple>
 
@@ -35,5 +36,6 @@ namespace ServWork
 	private:
 		std::vector<SockId> ids;
 		std::vector<HANDLE> events;
+		std::mutex mutex;
 	};
 }

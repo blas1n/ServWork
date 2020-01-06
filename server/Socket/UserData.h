@@ -11,7 +11,11 @@ namespace ServWork
 	public:
 		UserData();
 		
+		UserData(const UserData& other);
+		UserData(UserData&& other);
 
+		UserData& operator=(const UserData& other);
+		UserData& operator=(UserData&& other);
 		
 		~UserData();
 

@@ -1,7 +1,5 @@
 #include "Engine.h"
-#include <functional>
 #include <iostream>
-#include <map>
 #include "Config.h"
 #include "EventManager.h"
 #include "ServerSocket.h"
@@ -46,30 +44,43 @@ namespace ServWork
 
 	int EngineBase::Run()
 	{
-		std::function<void(ServerSocket&)> accept = &ServerSocket::Accept;
-		std::map<long, std::function<void(ClientSocket&)>> func
-		{
-			std::make_pair(FD_READ, &ClientSocket::OnReceive),
-			std::make_pair(FD_CLOSE, &ClientSocket::OnClose)
-		};
-
 		ThreadPool threadPool;
 
 		while (true)
 		{
 			const auto [index, event] = EventManager::Get().GetNetworkEvent();
 			
-			if (event == FD_ACCEPT)
-			{
-				threadPool.AddTask(accept, *sock);
-				continue;
-			}
-
 			try
 			{
-				const auto id = EventManager::Get().GetId(index);
-				auto& socket = sock->FindClient(id);
-				threadPool.AddTask(func[event], socket);
+				switch (event)
+				{
+				case FD_ACCEPT:
+					threadPool.AddTask([socket = sock]() mutable
+					{
+						socket->Connect();
+					});
+					break;
+				case FD_CLOSE:
+				{
+					const auto id = EventManager::Get().GetId(index);
+					threadPool.AddTask([socket = sock, id]() mutable
+					{
+						socket->Disconnect(socket->FindClient(id));
+					});
+					break;
+				}
+				case FD_READ:
+				{
+					const auto id = EventManager::Get().GetId(index);
+					threadPool.AddTask([socket = &sock->FindClient(id)]() mutable
+					{
+						socket->OnReceive();
+					});
+					break;
+				}
+				default:
+					std::cout << Name{ STR("undef_event") }.Get() << std::endl;
+				}
 			}
 			catch (Warning& e)
 			{

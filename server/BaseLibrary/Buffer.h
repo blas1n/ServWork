@@ -64,13 +64,23 @@ namespace ServWork
 
 		inline Buffer& operator<<=(size_t index) noexcept
 		{
-			std::rotate(vec.begin(), vec.begin() + index, vec.end());
+			std::move(
+				std::make_move_iterator(vec.begin() + index),
+				std::make_move_iterator(vec.end()),
+				vec.begin()
+			);
+			vec.shrink_to_fit();
 			return *this;
 		}
 
 		inline Buffer& operator>>=(size_t index) noexcept
 		{
-			std::rotate(vec.rbegin(), vec.rbegin() + index, vec.rend());
+			vec.resize(vec.size() + index);
+			std::move(
+				std::make_move_iterator(vec.begin()),
+				std::make_move_iterator(vec.end() - index),
+				vec.begin() + index
+			);
 			return *this;
 		}
 

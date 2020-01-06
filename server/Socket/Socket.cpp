@@ -29,18 +29,20 @@ namespace ServWork
 		s = INVALID_SOCKET;
 	}
 
-	void Socket::Send(byte id, Buffer& buf) const
+	void Socket::Send(byte id, const Buffer& buf) const
 	{
 		if (s == INVALID_SOCKET)
 			throw MakeWarning("socket_not_open");
-
-		buf >>= HEADER_SIZE;
 		
-		const auto size = static_cast<uint32>(buf.GetCurSize());
-		const Header header{ Config::checkKey, id, size };
-		buf.Set(0, header);
+		auto size = static_cast<uint32>(buf.GetCurSize());
+		const Header header{ Config::checkKey, id, Internal::SwapData(size) };
 
-		if (send(s, buf, size, 0) != size)
+		auto buffer = buf;
+		size += HEADER_SIZE;
+		buffer >>= HEADER_SIZE;
+		buffer.Set(0, header);
+
+		if (send(s, buffer, size, 0) != size)
 			throw MakeWarning("send_failed");
 	}
 

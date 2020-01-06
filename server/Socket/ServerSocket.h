@@ -24,7 +24,8 @@ namespace ServWork
 		void Open() override;
 		void Close() noexcept override;
 
-		void Accept();
+		void Connect();
+		void Disconnect(ClientSocket& client);
 
 		inline ClientSocket& FindClient(SockId sock)
 		{

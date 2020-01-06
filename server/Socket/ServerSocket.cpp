@@ -62,7 +62,7 @@ namespace ServWork
 		Base::Close();
 	}
 
-	void ServerSocket::Accept()
+	void ServerSocket::Connect()
 	{
 		AddrIn addr;
 		SockLen len = sizeof(AddrIn);
@@ -86,14 +86,20 @@ namespace ServWork
 		client.SetReactor(reactor);
 		client.SetId(newSocket);
 		client.Open();
+		clients->emplace_back(std::move(client)).OnAccept();
+	}
 
-		clients->emplace_back(std::move(client));
-		client.OnAccept();
+	void ServerSocket::Disconnect(ClientSocket& client)
+	{
+		auto iter = std::find(clients->begin(), clients->end(), client);
+		auto elem = std::move(*iter);
+		clients->erase(iter);
+		elem.OnClose();
 	}
 
 	size_t ServerSocket::FindClientIndex(SockId sock) const
 	{
-		auto iter = std::find_if(clients->begin(), clients->end(), [sock](auto client)
+		auto iter = std::find_if(clients->begin(), clients->end(), [sock](auto& client)
 			{
 				return client.GetId() == sock;
 			});

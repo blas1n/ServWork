@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EventSocket.h"
+#include <memory>
 #include "UserData.h"
 
 namespace ServWork
@@ -11,7 +12,7 @@ namespace ServWork
 
 	public:
 		ClientSocket()
-			: Base(), data(new UserData{ }) {}
+			: Base(), data(std::make_shared<UserData>()) {}
 
 		ClientSocket(const ClientSocket&) = default;
 		ClientSocket(ClientSocket&&) = default;
@@ -19,10 +20,7 @@ namespace ServWork
 		ClientSocket& operator=(const ClientSocket&) = default;
 		ClientSocket& operator=(ClientSocket&&) = default;
 
-		~ClientSocket() override
-		{
-			delete data;
-		}
+		~ClientSocket() override = default;
 
 		void OnAccept();
 		void OnReceive();
@@ -37,6 +35,6 @@ namespace ServWork
 		inline const UserData& GetData() const noexcept { return *data; }
 
 	private:
-		UserData* data;
+		std::shared_ptr<UserData> data;
 	};
 }
