@@ -10,10 +10,17 @@ namespace ServWork
 	{
 	public:
 		UserData();
+		
+		UserData(const UserData& other);
+		UserData(UserData&& other);
+
+		UserData& operator=(const UserData& other);
+		UserData& operator=(UserData&& other);
+		
 		~UserData();
 
 		inline const char_t* GetIp() const noexcept { return ip; }
-		inline void SetIp(const char_t* inIp) noexcept { wcsncpy(ip, inIp, 16); }
+		inline void SetIp(const char_t* inIp) noexcept { strncpy(ip, inIp, 16); }
 
 		inline const Sender* GetSender() const noexcept { return sender; }
 		inline const Receiver* GetReceiver() const noexcept { return receiver; }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 #include "ClientSocket.h"
 
@@ -23,23 +24,24 @@ namespace ServWork
 		void Open() override;
 		void Close() noexcept override;
 
-		void Accept();
+		void Connect();
+		void Disconnect(ClientSocket& client);
 
 		inline ClientSocket& FindClient(SockId sock)
 		{
-			return clients[FindClientIndex(sock)];
+			return (*clients)[FindClientIndex(sock)];
 		}
 
 		inline const ClientSocket& FindClient(SockId sock) const
 		{
-			return clients[FindClientIndex(sock)];
+			return (*clients)[FindClientIndex(sock)];
 		}
 		
 		size_t FindClientIndex(SockId sock) const;
 
-		inline const std::vector<ClientSocket>& GetClients() const noexcept
+		inline const auto& GetClients() const noexcept
 		{
-			return clients;
+			return *clients;
 		}
 
 		inline long GetEvent() const noexcept override
@@ -48,7 +50,6 @@ namespace ServWork
 		}
 
 	private:
-		std::vector<ClientSocket> clients;
-		size_t clientNum;
+		std::shared_ptr<std::vector<ClientSocket>> clients;
 	};
 }

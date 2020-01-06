@@ -1,6 +1,10 @@
 #include "EventManager.h"
 #include <algorithm>
+#include <chrono>
+#include <thread>
 #include "EventSocket.h"
+
+using namespace std::chrono_literals;
 
 namespace ServWork
 {
@@ -17,6 +21,7 @@ namespace ServWork
 
 	void EventManager::RegisterEvent(const EventSocket& socket, long event)
 	{
+		std::lock_guard<std::mutex> lock{ mutex };
 		const auto id = socket.GetId();
 		ids.push_back(id);
 		
@@ -27,6 +32,7 @@ namespace ServWork
 
 	void EventManager::UnregisterEvent(const EventSocket& socket)
 	{
+		std::lock_guard<std::mutex> lock{ mutex };
 		const auto [idIter, eventIter] = Internal::GetHandles(ids, events, socket);
 		
 		ids.erase(idIter);
@@ -36,17 +42,30 @@ namespace ServWork
 
 	void EventManager::ChangeEvent(const EventSocket& socket, long event)
 	{
+		std::lock_guard<std::mutex> lock{ mutex };
 		const auto [idIter, eventIter] = Internal::GetHandles(ids, events, socket);
 		WSAEventSelect(*idIter, *eventIter, event);
 	}
 
 	std::tuple<DWORD, long> EventManager::GetNetworkEvent() noexcept
 	{
-		const auto index = WSAWaitForMultipleEvents
-			(static_cast<DWORD>(ids.size()), events.data(), false, INFINITE, false);
+		DWORD ret;
+
+		while (true)
+		{
+			mutex.lock();
+
+			ret = WSAWaitForMultipleEvents(static_cast<DWORD>(GetSize()),
+				events.data(), false, 1000, false);
+
+			mutex.unlock();
+
+			if (ret != WSA_WAIT_TIMEOUT) break;
+			std::this_thread::sleep_for(10ms);
+		}
 
 		WSANETWORKEVENTS event;
-		WSAEnumNetworkEvents(ids[index], events[index], &event);
-		return std::make_tuple(index, event.lNetworkEvents);
+		WSAEnumNetworkEvents(ids[ret], events[ret], &event);
+		return std::make_tuple(ret, event.lNetworkEvents);
 	}
 }

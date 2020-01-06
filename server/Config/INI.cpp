@@ -7,19 +7,19 @@ namespace ServWork
 	INI::INI(const String& inPath)
 		: map(), path(inPath)
 	{
-		std::wifstream in{ path };
+		std::ifstream in{ path };
 		if (!in.is_open())
 		{
 			std::cout << "Cannot open config file" << std::endl;
 			exit(1);
 		}
 
-		char_t tmp[128];
+		char_t tmp[1028];
 		String buf;
 
 		while (in)
 		{
-			in.getline(tmp, 128);
+			in.getline(tmp, 1028);
 			buf = tmp;
 
 			auto idx = buf.find(STR('='));
@@ -38,7 +38,7 @@ namespace ServWork
 	void INI::Set(const String& key, const String& value)
 	{
 		map[key] = value;
-		std::wofstream out{ path };
+		std::ofstream out{ path };
 		for (const auto& pair : map)
 			out << pair.first << STR("=") << pair.second << std::endl;
 	}

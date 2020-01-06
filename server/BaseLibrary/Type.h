@@ -7,7 +7,7 @@
 
 using namespace std::string_literals;
 
-#define _STR(x) L##x
+#define _STR(x) x
 #define STR(x) _STR(x)
 
 namespace ServWork
@@ -24,8 +24,8 @@ namespace ServWork
 	using int32 = signed int;
 	using int64 = signed long long;
 	
-	using char_t = wchar_t;
-	using String = std::wstring;
+	using char_t = char;
+	using String = std::string;
 
 #pragma pack(push, 1)
 	extern "C" struct Header
@@ -36,13 +36,10 @@ namespace ServWork
 	};
 #pragma pack(pop)
 
-	constexpr char_t ROOT_PATH[] = STR("");
-	constexpr char_t CUR_PATH[] = STR("");
 	constexpr auto HEADER_SIZE = sizeof(Header);
+	constexpr char_t ROOT_PATH[] = ROOT_DIR;
+	constexpr char_t CUR_PATH[] = CUR_DIR;
 
 	template <typename T, size_t N>
 	constexpr size_t ArrSize(T(&)[N]) noexcept { return N; }
 }
-
-#undef ROOT_DIR
-#undef CUR_DIR

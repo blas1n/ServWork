@@ -22,6 +22,12 @@ set_library (
 	${SRC}
 )
 
+# Definitions
+target_compile_definitions (${PROJECT_ID} PUBLIC
+	ROOT_DIR="${CMAKE_SOURCE_DIR}/"
+	CUR_DIR="${SERV_WORK_DIR}/"
+)
+
 # Filters
 source_group ("Buffer" FILES ${SRC_BUFFER})
 source_group ("String Translator" FILES ${SRC_STRING_TRANSLATOR})

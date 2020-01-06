@@ -1,7 +1,5 @@
 #include "Engine.h"
-#include <functional>
 #include <iostream>
-#include <map>
 #include "Config.h"
 #include "EventManager.h"
 #include "ServerSocket.h"
@@ -12,12 +10,12 @@ namespace ServWork
 	EngineBase::EngineBase()
 		: sock{ new ServerSocket }
 	{
-		std::locale::global(std::locale(""));
+		std::locale::global(std::locale{ "ko_KR.UTF-8" });
 
 		WSADATA wsa;
-		if (!WSAStartup(MAKEWORD(2, 2), &wsa))
+		if (WSAStartup(MAKEWORD(2, 2), &wsa))
 		{
-			std::wcout << Name{ STR("cannot_start_up_wsa") }.Get() << std::endl;
+			std::cout << Name{ STR("cannot_start_up_wsa") }.Get() << std::endl;
 			exit(3);
 		}
 
@@ -28,9 +26,11 @@ namespace ServWork
 		}
 		catch (Exception& e)
 		{
-			std::wcout << Name{ STR("cannot_start") }.Get() << e.What() << std::endl;
+			std::cout << Name{ STR("cannot_start") }.Get() << e.What() << std::endl;
 			exit(2);
 		}
+
+		std::cout << Name{ STR("start") }.Get() << std::endl;
 	}
 
 	EngineBase::~EngineBase()
@@ -38,42 +38,58 @@ namespace ServWork
 		sock->Close();
 		WSACleanup();
 		delete sock;
+
+		std::cout << Name{ STR("end") }.Get() << std::endl;
 	}
 
 	int EngineBase::Run()
 	{
-		std::map<long, std::function<void(ClientSocket&)>> func
-		{
-			std::make_pair(FD_READ, &ClientSocket::OnReceive),
-			std::make_pair(FD_CLOSE, &ClientSocket::OnClose)
-		};
-
 		ThreadPool threadPool;
 
 		while (true)
 		{
 			const auto [index, event] = EventManager::Get().GetNetworkEvent();
 			
-			if (event == FD_ACCEPT)
-			{
-				threadPool.AddTask(&ServerSocket::Accept, *sock);
-				continue;
-			}
-
 			try
 			{
-				const auto id = EventManager::Get().GetId(index);
-				auto& socket = sock->FindClient(id);
-				threadPool.AddTask(func[event], socket);
+				switch (event)
+				{
+				case FD_ACCEPT:
+					threadPool.AddTask([socket = sock]() mutable
+					{
+						socket->Connect();
+					});
+					break;
+				case FD_CLOSE:
+				{
+					const auto id = EventManager::Get().GetId(index);
+					threadPool.AddTask([socket = sock, id]() mutable
+					{
+						socket->Disconnect(socket->FindClient(id));
+					});
+					break;
+				}
+				case FD_READ:
+				{
+					const auto id = EventManager::Get().GetId(index);
+					threadPool.AddTask([socket = &sock->FindClient(id)]() mutable
+					{
+						socket->OnReceive();
+					});
+					break;
+				}
+				default:
+					std::cout << Name{ STR("undef_event") }.Get() << std::endl;
+				}
 			}
 			catch (Warning& e)
 			{
-				std::wcout << e.What() << std::endl;
+				std::cout << e.What() << std::endl;
 				continue;
 			}
 			catch (Error& e)
 			{
-				std::wcout << e.What() << std::endl;
+				std::cout << e.What() << std::endl;
 				return 1;
 			}
 		}

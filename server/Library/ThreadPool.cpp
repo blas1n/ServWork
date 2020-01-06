@@ -42,7 +42,7 @@ namespace ServWork
 			cv.wait(lock, [this]() { return !tasks.empty() || isEnd; });
 			if (isEnd && tasks.empty()) return;
 
-			auto&& task = std::move(tasks.front());
+			std::function<void()> task = std::move(tasks.front());
 			tasks.pop();
 			lock.unlock();
 			task();

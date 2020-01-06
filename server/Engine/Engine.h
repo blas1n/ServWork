@@ -26,6 +26,7 @@ namespace ServWork
 			: EngineBase(),
 			reactor(new T)
 		{
+			sock->SetReactor(reactor);
 			reactor->SetServer(sock);
 		}
 

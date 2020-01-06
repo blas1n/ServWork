@@ -9,7 +9,8 @@
 namespace ServWork
 {
 	ServerSocket::ServerSocket()
-		: Base(), clients(Config::maxUser), clientNum(0) {}
+		: Base(),
+		clients(std::make_shared<std::vector<ClientSocket>>(Config::maxUser)) {}
 
 	void ServerSocket::Open()
 	{
@@ -18,7 +19,7 @@ namespace ServWork
 		{
 			throw Error
 			{
-				Name{ STR("socket_error") }.Get() + _wcserror(errno)
+				Name{ STR("socket_error") }.Get() + strerror(errno)
 			};
 		}
 
@@ -33,7 +34,7 @@ namespace ServWork
 		{
 			throw Error
 			{
-				Name{ STR("bind_error") }.Get() + _wcserror(errno)
+				Name{ STR("bind_error") }.Get() + strerror(errno)
 			};
 		}
 
@@ -42,7 +43,7 @@ namespace ServWork
 		{
 			throw Error
 			{
-				Name{ STR("listen_error") }.Get() + _wcserror(errno)
+				Name{ STR("listen_error") }.Get() + strerror(errno)
 			};
 		}
 
@@ -51,8 +52,8 @@ namespace ServWork
 
 	void ServerSocket::Close() noexcept
 	{
-		while (clientNum--)
-			clients[clientNum].Close();
+		for (auto& client : *clients)
+			client.Close();
 
 		LINGER linger{ 1, 0 };
 		setsockopt(s, SOL_SOCKET, SO_LINGER,
@@ -61,7 +62,7 @@ namespace ServWork
 		Base::Close();
 	}
 
-	void ServerSocket::Accept()
+	void ServerSocket::Connect()
 	{
 		AddrIn addr;
 		SockLen len = sizeof(AddrIn);
@@ -71,7 +72,7 @@ namespace ServWork
 		if (newSocket == INVALID_SOCKET)
 			throw MakeWarning("accepted_socket_is_invalid");
 
-		auto ip = StringTranslator::AsciiToUnicode(inet_ntoa(addr.sin_addr));
+		auto ip = std::string(inet_ntoa(addr.sin_addr));
 
 		if (EventManager::Get().GetSize() == Config::maxUser)
 		{
@@ -80,24 +81,32 @@ namespace ServWork
 			throw MakeWarning("client_is_full");
 		}
 
-		auto client = clients[clientNum++];
-		client.Open();
-		client.SetId(newSocket);
-		client.SetReactor(reactor);
+		ClientSocket client{ };
 		client.GetData().SetIp(ip.c_str());
-		client.OnAccept();
+		client.SetReactor(reactor);
+		client.SetId(newSocket);
+		client.Open();
+		clients->emplace_back(std::move(client)).OnAccept();
+	}
+
+	void ServerSocket::Disconnect(ClientSocket& client)
+	{
+		auto iter = std::find(clients->begin(), clients->end(), client);
+		auto elem = std::move(*iter);
+		clients->erase(iter);
+		elem.OnClose();
 	}
 
 	size_t ServerSocket::FindClientIndex(SockId sock) const
 	{
-		auto iter = std::find_if(clients.begin(), clients.end(), [sock](auto client)
+		auto iter = std::find_if(clients->begin(), clients->end(), [sock](auto& client)
 			{
 				return client.GetId() == sock;
 			});
 
-		if (iter == clients.end())
+		if (iter == clients->end())
 			throw MakeWarning("the_client_does_not_exist");
 		
-		return iter - clients.cbegin();
+		return iter - clients->cbegin();
 	}
 }
