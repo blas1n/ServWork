@@ -21,7 +21,6 @@ namespace ServWork
 
 	void EventManager::RegisterEvent(const EventSocket& socket, long event)
 	{
-		std::lock_guard<std::mutex> lock{ mutex };
 		const auto id = socket.GetId();
 		ids.push_back(id);
 		
@@ -32,9 +31,10 @@ namespace ServWork
 
 	void EventManager::UnregisterEvent(const EventSocket& socket)
 	{
-		std::lock_guard<std::mutex> lock{ mutex };
 		const auto [idIter, eventIter] = Internal::GetHandles(ids, events, socket);
-		
+		if (idIter == ids.cend() || eventIter == events.cend())
+			return;
+
 		ids.erase(idIter);
 		WSACloseEvent(*eventIter);
 		events.erase(eventIter);
@@ -42,27 +42,14 @@ namespace ServWork
 
 	void EventManager::ChangeEvent(const EventSocket& socket, long event)
 	{
-		std::lock_guard<std::mutex> lock{ mutex };
 		const auto [idIter, eventIter] = Internal::GetHandles(ids, events, socket);
 		WSAEventSelect(*idIter, *eventIter, event);
 	}
 
 	std::tuple<DWORD, long> EventManager::GetNetworkEvent() noexcept
 	{
-		DWORD ret;
-
-		while (true)
-		{
-			mutex.lock();
-
-			ret = WSAWaitForMultipleEvents(static_cast<DWORD>(GetSize()),
-				events.data(), false, 1000, false);
-
-			mutex.unlock();
-
-			if (ret != WSA_WAIT_TIMEOUT) break;
-			std::this_thread::sleep_for(10ms);
-		}
+		DWORD ret = WSAWaitForMultipleEvents(static_cast<DWORD>(GetSize()),
+				events.data(), false, INFINITE, false);
 
 		WSANETWORKEVENTS event;
 		WSAEnumNetworkEvents(ids[ret], events[ret], &event);

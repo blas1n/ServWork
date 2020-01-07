@@ -8,7 +8,7 @@ namespace ServWork
 {
 	void ClientSocket::OnAccept()
 	{
-		std::cout << data->GetIp() << " was connected." << std::endl;
+		std::cout << data->GetIp() << " was connected." << '\n' << std::endl;
 		reactor->OnAccept(*this);
 	}
 
@@ -30,19 +30,19 @@ namespace ServWork
 
 		uint32 size = 0;
 		recv(s, reinterpret_cast<char*>(&size), sizeof(uint32), 0);
-		size = Internal::SwapData(size);
+		size = EndianTranslator::Translate(size);
 
 		Buffer buf{ size };
 		if (size > 0) Recv(buf, size);
 
-		std::cout << data->GetIp() << " was recieved." << std::endl;
+		std::cout << data->GetIp() << " was recieved." << '\n' << std::endl;
 		reactor->OnReceive(*this, id, std::move(buf));
 		EventManager::Get().ChangeEvent(*this, GetEvent());
 	}
 
 	void ClientSocket::OnClose()
 	{
-		std::cout << data->GetIp() << " was closed." << std::endl;
+		std::cout << data->GetIp() << " was closed." << '\n' << std::endl;
 		reactor->OnClose(*this);
 	}
 }

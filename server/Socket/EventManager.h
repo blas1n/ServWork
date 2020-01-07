@@ -36,6 +36,5 @@ namespace ServWork
 	private:
 		std::vector<SockId> ids;
 		std::vector<HANDLE> events;
-		std::mutex mutex;
 	};
 }

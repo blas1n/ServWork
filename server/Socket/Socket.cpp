@@ -1,5 +1,6 @@
 #include "Socket.h"
 #include <chrono>
+#include <mutex>
 #include <thread>
 #include "Config.h"
 
@@ -34,8 +35,11 @@ namespace ServWork
 		if (s == INVALID_SOCKET)
 			throw MakeWarning("socket_not_open");
 		
+		static std::mutex sendMutex;
+		std::lock_guard<std::mutex> lock{ sendMutex };
+
 		auto size = static_cast<uint32>(buf.GetCurSize());
-		const Header header{ Config::checkKey, id, Internal::SwapData(size) };
+		const Header header{ Config::checkKey, id, EndianTranslator::Translate(size) };
 
 		auto buffer = buf;
 		size += HEADER_SIZE;
@@ -52,6 +56,9 @@ namespace ServWork
 		
 		if (s == INVALID_SOCKET)
 			throw MakeWarning("socket_not_open");
+
+		static std::mutex recvMutex;
+		std::lock_guard<std::mutex> lock{ recvMutex };
 
 		auto tmp = new char[size];
 		size_t totalSize = 0;

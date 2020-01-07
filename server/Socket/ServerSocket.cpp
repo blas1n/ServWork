@@ -94,15 +94,16 @@ namespace ServWork
 		auto iter = std::find(clients->begin(), clients->end(), client);
 		auto elem = std::move(*iter);
 		clients->erase(iter);
+
 		elem.OnClose();
 	}
 
 	size_t ServerSocket::FindClientIndex(SockId sock) const
 	{
 		auto iter = std::find_if(clients->begin(), clients->end(), [sock](auto& client)
-			{
-				return client.GetId() == sock;
-			});
+		{
+			return client.GetId() == sock;
+		});
 
 		if (iter == clients->end())
 			throw MakeWarning("the_client_does_not_exist");

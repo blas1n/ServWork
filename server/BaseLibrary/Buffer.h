@@ -104,6 +104,11 @@ namespace ServWork
 			return vec.data() + index;
 		}
 
+		inline String ToString(size_t index = 0) const noexcept
+		{
+			return reinterpret_cast<const char_t*>(Get());
+		}
+
 		void Set(size_t index, const byte* content, size_t size);
 
 		template <size_t N>

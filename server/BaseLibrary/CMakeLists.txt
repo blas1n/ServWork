@@ -6,6 +6,10 @@ set (SRC_BUFFER
 	Buffer.h
 )
 
+set (SRC_ENDIAN_TRANSLATOR
+	EndianTranslator.h
+)
+
 set (SRC_STRING_TRANSLATOR
 	StringTranslator.h
 )
@@ -17,6 +21,7 @@ set (SRC
 # Target
 set_library (
 	${SRC_BUFFER}
+	${SRC_ENDIAN_TRANSLATOR}
 	${SRC_STRING_TRANSLATOR}
 	${SRC_THREAD_POOL}
 	${SRC}
@@ -30,5 +35,6 @@ target_compile_definitions (${PROJECT_ID} PUBLIC
 
 # Filters
 source_group ("Buffer" FILES ${SRC_BUFFER})
+source_group ("Endian Translator" FILES ${SRC_ENDIAN_TRANSLATOR})
 source_group ("String Translator" FILES ${SRC_STRING_TRANSLATOR})
 source_group ("" FILES ${SRC})

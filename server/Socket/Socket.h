@@ -5,36 +5,6 @@
 
 namespace ServWork
 {
-	namespace Internal
-	{
-		enum class Endianness : uint32 {
-			LITTLE_ENDIAN = 0x00000001,
-			BIG_ENDIAN = 0x01000000,
-			UNKNOWN_ENDIAN = 0xFFFFFFFF
-		};
-
-		constexpr Endianness GetEndianness() {
-			return static_cast<Endianness>(1 & 0xFFFFFFFF);
-		}
-
-		template <class T>
-		T ReverseEndian(const T& src)
-		{
-			T dest = src;
-			auto ptr = reinterpret_cast<byte*>(&dest);
-			std::reverse(ptr, ptr + sizeof(T));
-			return dest;
-		}
-
-		template <class T>
-		T SwapData(const T& src)
-		{
-			if constexpr (GetEndianness() == Endianness::BIG_ENDIAN)
-				return src;
-			return ReverseEndian(src);
-		}
-	}
-
 	class Socket
 	{
 	public:

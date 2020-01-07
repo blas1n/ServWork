@@ -3,6 +3,7 @@
 #include "Core.h"
 #include <WinSock2.h>
 #include "Buffer.h"
+#include "EndianTranslator.h"
 
 #undef SOCKET_ERROR
 #undef INVALID_SOCKET

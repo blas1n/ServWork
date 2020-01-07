@@ -30,7 +30,7 @@ namespace ServWork
 			exit(2);
 		}
 
-		std::cout << Name{ STR("start") }.Get() << std::endl;
+		std::cout << Name{ STR("start") }.Get() << '\n' << std::endl;
 	}
 
 	EngineBase::~EngineBase()
@@ -39,7 +39,7 @@ namespace ServWork
 		WSACleanup();
 		delete sock;
 
-		std::cout << Name{ STR("end") }.Get() << std::endl;
+		std::cout << Name{ STR("end") }.Get() << '\n' << std::endl;
 	}
 
 	int EngineBase::Run()
@@ -55,31 +55,22 @@ namespace ServWork
 				switch (event)
 				{
 				case FD_ACCEPT:
-					threadPool.AddTask([socket = sock]() mutable
-					{
-						socket->Connect();
-					});
+				{
+					sock->Connect();
 					break;
+				}
 				case FD_CLOSE:
 				{
 					const auto id = EventManager::Get().GetId(index);
-					threadPool.AddTask([socket = sock, id]() mutable
-					{
-						socket->Disconnect(socket->FindClient(id));
-					});
+					sock->Disconnect(sock->FindClient(id));
 					break;
 				}
 				case FD_READ:
 				{
 					const auto id = EventManager::Get().GetId(index);
-					threadPool.AddTask([socket = &sock->FindClient(id)]() mutable
-					{
-						socket->OnReceive();
-					});
+					sock->FindClient(id).OnReceive();
 					break;
 				}
-				default:
-					std::cout << Name{ STR("undef_event") }.Get() << std::endl;
 				}
 			}
 			catch (Warning& e)
